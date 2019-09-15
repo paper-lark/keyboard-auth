@@ -22,11 +22,14 @@
   },
   "homepage": "https://github.com/paper-lark/keyboard-auth#readme",
   "dependencies": {
+    "google-protobuf": "3.10.0-rc.1",
+    "grpc": "1.23.3",
     "lodash": "4.17.15",
     "typescript": "3.6.3",
     "winston": "3.2.1"
   },
   "devDependencies": {
+    "@types/google-protobuf": "3.7.1",
     "@types/jest": "24.0.18",
     "@types/lodash": "4.14.138",
     "@types/node": "12.7.5",

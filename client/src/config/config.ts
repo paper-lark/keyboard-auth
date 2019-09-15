@@ -12,12 +12,13 @@ export interface Configuration {
 export default class ConfigurationSource {
     public static get(): Configuration {
         const configPath = this.getConfigurationPath();
+        const configFile = path.join(configPath, 'config.json');
         let existingConfig = {};
 
         // read existing configuration
         try {
             if (fs.existsSync(configPath)) {
-                const buf = fs.readFileSync(configPath);
+                const buf = fs.readFileSync(configFile);
                 existingConfig = JSON.parse(buf.toString());
             }
         } catch (err) {
@@ -31,7 +32,8 @@ export default class ConfigurationSource {
         };
         try {
             const buf = Buffer.from(JSON.stringify(config));
-            fs.writeFileSync(configPath, buf);
+            fs.mkdirSync(configPath, { recursive: true });
+            fs.writeFileSync(configFile, buf);
         } catch (err) {
             logger.error(`Failed to save configuration file: ${err}`);
         }
@@ -41,23 +43,24 @@ export default class ConfigurationSource {
 
     private static getDefaultConfig(): Configuration {
         return {
-            host: 'localhost:3000',
+            host: '0.0.0.0:3000',
             login: 'test-user',
             token: '7E9E95A5-B43C-48AD-BCE3-BDF6B19F23A2',
         }; // FIXME: add credentials to the test DB
     }
 
     private static getConfigurationPath(): string {
-        switch (os.type()) {
+        const osType = os.type().toLowerCase();
+        switch (osType) {
         case 'linux':
         case 'darwin':
-            return path.join(os.homedir(), '.config', 'authenticator', 'config.json');
+            return path.join(os.homedir(), '.config', 'authenticator');
 
         case 'win32':
-            return path.join(os.homedir(), 'AppData', 'Roaming', 'Authenticator', 'config.json');
+            return path.join(os.homedir(), 'AppData', 'Roaming', 'Authenticator');
 
         default:
-            throw new Error(`Unknown platform: ${os.type()}, cannot read configuration...`);
+            throw new Error(`Unknown platform: ${osType}, cannot read configuration...`);
         }
     }
 }

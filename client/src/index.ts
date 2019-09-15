@@ -23,5 +23,6 @@ const keyLogger = new KeyLogger(onKeyDown, onKeyUp);
 process.on('SIGINT', () => {
     logger.info({ message: 'Process interrupted, aborting....' });
     keyLogger.destruct();
+    auth.shutdown();
     process.exit();
 });

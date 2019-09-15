@@ -21,3 +21,9 @@ protoc \
     --ts_out=${DEST_DIR} \
     -I ${INCLUDE_DIR} \
     ${PROTO_FILES}
+
+# create copies in all packages
+rm -rf ./server/src/api/__generated__
+rm -rf ./client/src/api/__generated__
+cp -r ${DEST_DIR} ./server/src/api/__generated__
+cp -r ${DEST_DIR} ./client/src/api/__generated__
