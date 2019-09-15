@@ -1,0 +1,44 @@
+{
+  "name": "keyboard-auth-client",
+  "version": "0.0.0",
+  "description": "Keyboard authenticator client",
+  "main": "index.ts",
+  "scripts": {
+    "start:dev": "ts-node --project tsconfig.json src/index.ts",
+    "test": "jest -c config/jest.js",
+    "lint": "prettier-tslint fix '**/*.ts'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paper-lark/keyboard-auth.git"
+  },
+  "keywords": [
+    "keyboard"
+  ],
+  "author": "Max Zhuravsky <paperlark@yandex.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/paper-lark/keyboard-auth/issues"
+  },
+  "homepage": "https://github.com/paper-lark/keyboard-auth#readme",
+  "dependencies": {
+    "grpc": "1.23.3",
+    "iohook": "0.6.1",
+    "lodash": "4.17.15",
+    "typescript": "3.6.3",
+    "winston": "3.2.1"
+  },
+  "devDependencies": {
+    "@types/jest": "24.0.18",
+    "@types/lodash": "4.14.138",
+    "@types/node": "12.7.5",
+    "jest": "24.9.0",
+    "prettier": "1.18.2",
+    "prettier-tslint": "0.4.2",
+    "ts-jest": "24.1.0",
+    "ts-node": "8.3.0",
+    "tslint": "5.20.0",
+    "tslint-config-prettier": "1.18.0",
+    "tslint-config-security": "1.16.0"
+  }
+}

@@ -1,0 +1,7 @@
+# Auxiliary files
+node_modules
+
+# Build and generated files
+iohook
+build
+__generated__
