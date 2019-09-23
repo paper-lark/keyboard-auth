@@ -5,6 +5,7 @@ import { KeyEvent } from '../utils/io';
 import { logger } from '../utils/logger';
 import { Timestamp } from 'google-protobuf/google/protobuf/timestamp_pb';
 import moment  from 'moment';
+import { keyname } from 'os-keycode';
 
 export interface AuthenticatorConfig {
     host: string;
@@ -39,13 +40,31 @@ export default class Authenticator {
         ts.setNanos(currentMoment.milliseconds() * 1000);
         ts.setSeconds(currentMoment.unix());
 
+        // map keycode to key character
+        const keyInfo = keyname(e.rawcode);
+        if (!keyInfo) {
+            logger.warn(`Keycode ${e.rawcode} failed to translate`);
+            return;
+        }
+        const keyChar = keyInfo.key ? keyInfo.key : keyInfo.keys[0];
+
         // create proto event
-        // FIXME: write the real mapper
         const event = new Event();
         const keyEvent = new KeyboardEvent();
-        keyEvent.setKey('a');
+
+        keyEvent.setKey(keyChar);
         keyEvent.setTs(ts);
-        keyEvent.setType(KeyboardEvent.EventType.KEYDOWN);
+
+        switch (e.type) {
+        case 'keydown':
+            keyEvent.setType(KeyboardEvent.EventType.KEYDOWN);
+            break;
+        case 'keyup':
+            keyEvent.setType(KeyboardEvent.EventType.KEYUP);
+            break;
+        default:
+            throw new Error(`Unknown keyboard event type: ${e.type}`);
+        }
         event.setKeyboard(keyEvent);
 
         // send event
@@ -61,15 +80,31 @@ export default class Authenticator {
     }
 
     private startProcessingEvents() {
-        this.authStream.on('data', this.processDecision);
-        this.authStream.on('close', () => this.authStream.removeListener('data', this.processDecision));
+        this.authStream.on('data', this.onDecision);
+        this.authStream.on('end', this.onDisconnect);
+        this.authStream.on('close', this.onDisconnect);
+        this.authStream.on('error', this.onError);
     }
 
-    private processDecision(event: Decision) {
+    private onDisconnect = () => {
+        logger.warn(`Server disconnected`);
+        this.authStream.cancel();
+        this.client.close();
+    }
+
+    private onError = (err: Error) => {
+        logger.error(`Server disconnected due to error: ${err}`);
+        this.authStream.cancel();
+        this.client.close();
+    }
+
+    private onDecision = (event: Decision) => {
         switch (event.getDecisionCase()) {
         case Decision.DecisionCase.BLOCK:
-            logger.info(`Received block event, reason: ${event.getBlock()!.getReason()}`);
-            !!this.onBlock && this.onBlock();
+            logger.warn(`Received block event, reason: ${event.getBlock()!.getReason()}`);
+            if (!!this.onBlock) {
+                this.onBlock();
+            }
             break;
 
         default:

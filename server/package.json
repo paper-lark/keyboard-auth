@@ -4,7 +4,7 @@
   "description": "Keyboard authenticator server",
   "main": "index.ts",
   "scripts": {
-    "start:dev": "ts-node --project tsconfig.json src/index.ts",
+    "start:dev": "env TS_NODE_FILES=true ts-node --project tsconfig.json src/index.ts",
     "test": "jest -c config/jest.js",
     "lint": "prettier-tslint fix '**/*.ts'"
   },
@@ -24,7 +24,10 @@
   "dependencies": {
     "google-protobuf": "3.10.0-rc.1",
     "grpc": "1.23.3",
+    "guid-typescript": "1.0.9",
     "lodash": "4.17.15",
+    "mem": ">=4.0.0",
+    "moment": "2.24.0",
     "typescript": "3.6.3",
     "winston": "3.2.1"
   },
@@ -32,6 +35,7 @@
     "@types/google-protobuf": "3.7.1",
     "@types/jest": "24.0.18",
     "@types/lodash": "4.14.138",
+    "@types/moment": "2.13.0",
     "@types/node": "12.7.5",
     "grpc-tools": "1.8.0",
     "grpc_tools_node_protoc_ts": "2.5.4",

@@ -6,7 +6,7 @@ Keyboard authenticator is a client-server based application for authenticating u
 
 Prerequisites:
 - Proto compiler
-- gRPC Tools: `npm i -g grpc-tools`
+- gRPC Tools: `npm install -g grpc-tools`
 - Typescript plugin: `npm install -g grpc_tools_node_protoc_ts`
 
 ## FAQ

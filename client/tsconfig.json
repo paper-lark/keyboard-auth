@@ -21,7 +21,6 @@
         "incremental": true,
         "baseUrl": ".",
         "rootDir": "./src",
-        "outDir": "./lib",
-        "build": true
+        "outDir": "./lib"
     }
 }

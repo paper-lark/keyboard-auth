@@ -3,10 +3,12 @@ import { logger } from './utils/logger';
 import { KeyUpEvent, KeyDownEvent, KeyLogger } from './utils/io';
 import ConfigurationSource from './config/config';
 import Authenticator from './api/server';
+import lockSystem from 'lock-system';
 
 // get configuration
 const config = ConfigurationSource.get();
-const auth = new Authenticator(config);
+const auth = new Authenticator(config, lockSystem);
+// FIXME: do not crash when failed to connect to server
 
 // initialize io hooks
 function onKeyDown(event: KeyDownEvent) {
