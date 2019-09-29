@@ -1,0 +1,13 @@
+{
+    "pgsql.connections": [
+        {
+            "host": "127.0.0.1",
+            "dbname": "project",
+            "user": "postgres",
+            "password": "",
+            "emptyPasswordInput": true,
+            "port": "12001",
+            "profileName": "Project DB"
+        }
+    ]
+}

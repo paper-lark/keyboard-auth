@@ -46,7 +46,7 @@ export default class ConfigurationSource {
             host: '0.0.0.0:3000',
             login: 'test-user',
             token: '7E9E95A5-B43C-48AD-BCE3-BDF6B19F23A2',
-        }; // FIXME: add credentials to the test DB
+        };
     }
 
     private static getConfigurationPath(): string {
@@ -57,6 +57,7 @@ export default class ConfigurationSource {
             return path.join(os.homedir(), '.config', 'authenticator');
 
         case 'win32':
+        case 'windows_nt':
             return path.join(os.homedir(), 'AppData', 'Roaming', 'Authenticator');
 
         default:

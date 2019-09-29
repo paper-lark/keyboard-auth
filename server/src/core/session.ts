@@ -14,8 +14,8 @@ export class Session {
     }
 
     public putKeyboardEvent(event: KeyboardEvent): boolean {
-        // FIXME: implement
-        logger.info(`Received new keyboard event in session ${this.id}: ${JSON.stringify(event)}`);
+        // TODO: implement
+        logger.debug(`Received new keyboard event in session ${this.id}: ${JSON.stringify(event)}`);
         return Math.random() > 0.95;
     }
 
