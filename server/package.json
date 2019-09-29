@@ -10,7 +10,7 @@
     "create:db": "docker run -d --name project_pg -p 12001:5432 postgres:11 && docker exec -it project_pg psql -U postgres -c 'create database project'",
     "stop:db": "docker stop project_pg",
     "start:db": "docker start project_pg",
-    "gen:db": "postgres-typescript-codegen src/queries"
+    "connect:db": "pgcli --host=127.0.0.1 --port=12001 --dbname=project --username=postgres"
   },
   "repository": {
     "type": "git",

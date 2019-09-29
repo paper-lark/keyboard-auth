@@ -35,6 +35,7 @@ export default class Authenticator {
 
     public sendKeyboardEvent(e: KeyEvent) {
         // create event timestamp
+        // TODO: write tests
         const currentMoment = moment();
         const ts = new Timestamp();
         ts.setNanos(currentMoment.milliseconds() * 1000);
@@ -46,7 +47,7 @@ export default class Authenticator {
             logger.warn(`Keycode ${e.rawcode} failed to translate`);
             return;
         }
-        const keyChar = keyInfo.key ? keyInfo.key : keyInfo.keys[0];
+        const keyChar = keyInfo.key ? keyInfo.key : keyInfo.keys[0]; // TODO: fix mapping login
 
         // create proto event
         const event = new Event();

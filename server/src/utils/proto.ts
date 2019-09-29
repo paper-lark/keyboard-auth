@@ -1,21 +1,6 @@
 import { KeyboardEvent as Keyboard, AuthEvent as Auth } from '../api/__generated__/authenticator_pb';
-import moment = require('moment');
-
-export enum KeyboardEventType {
-    KEYUP,
-    KEYDOWN
-}
-
-export interface KeyboardEvent {
-    type: KeyboardEventType;
-    timestamp: moment.Moment;
-    key: string;
-}
-
-export interface AuthenticationEvent {
-    login: string;
-    token: string;
-}
+import moment from 'moment';
+import { AuthenticationEvent, KeyboardEvent, KeyboardEventType } from '../typings/common';
 
 export class ProtoUtils {
     public static parseKeyboardEvent(event: Keyboard): KeyboardEvent {

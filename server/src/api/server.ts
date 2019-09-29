@@ -4,11 +4,10 @@ import { AuthenticatorService } from './__generated__/authenticator_grpc_pb';
 import { logger } from '../utils/logger';
 import { ProtoUtils } from '../utils/proto';
 import { Session } from '../core/session';
-import { sessionManager } from '../core/manager';
+import { getManager } from '../core/manager';
 import GRPCError from 'grpc-error';
 
 export default class Server {
-
     private internal: grpc.Server;
 
     constructor(port: number) {
@@ -38,23 +37,23 @@ export default class Server {
 
         // create handlers
         const handleEnd = () => {
-            !!session && sessionManager.removeSession(session.getID());
+            !!session && getManager().removeSession(session.getID());
             call.end();
         };
 
         const handleError = (e: Error) => {
             logger.error(`Error occurred in session: `, e.message);
-            !!session && sessionManager.removeSession(session.getID());
+            !!session && getManager().removeSession(session.getID());
             call.end();
         };
 
-        const handleEvent = (event: Event) => {
+        const handleEvent = async (event: Event) => {
             try {
                 const auth = event.getAuth();
                 const keyboard = event.getKeyboard();
                 if (!!auth) {
                     const authEvent = ProtoUtils.parseAuthEvent(auth);
-                    session = sessionManager.createSession(authEvent.login, authEvent.token);
+                    session = await getManager().createSession(authEvent.login, authEvent.token);
 
                 } else if (!!keyboard) {
                     const keyboardEvent = ProtoUtils.parseKeyboardEvent(keyboard);
@@ -72,7 +71,7 @@ export default class Server {
                 }
             } catch (e) {
                 logger.error(`Error occurred in session: `, e);
-                !!session && sessionManager.removeSession(session.getID());
+                !!session && getManager().removeSession(session.getID());
                 call.end(); // TODO: send error to client
             }
         };
