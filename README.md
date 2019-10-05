@@ -3,12 +3,47 @@
 Keyboard authenticator is a client-server based application for authenticating users of computational system.
 Client side was tested on Windows 10 and macOS 10.14.5.
 
+The project uses Yarn and Lerna for package management.
+
 ## Build
 
 Prerequisites:
 - Proto compiler
-- gRPC Tools: `npm install -g grpc-tools`
-- Typescript plugin: `npm install -g grpc_tools_node_protoc_ts`
+
+To install dependencies and link local packages, run:
+
+```bash
+npx lerna bootstrap --ci
+```
+
+## How to start
+
+### Server
+
+To run the server you need a PostgreSQL server. DB connection parameters can be specified with the following environment variables:
+- PG_HOST
+- PG_PORT
+- PG_USER
+- PG_PASSWORD
+- PG_DB
+
+To start the server, run the following command in **packages/server**:
+
+```bash
+yarn run start:dev
+```
+
+### Client
+
+Client can be configured using a configuration file. It will be created automatically on the first run. The exact location depends on the OS:
+- **$HOME/.config/authenticator/config.json** – for Linux/macOS
+- **%APPDATA%/Authenticator/config.json** – for Windows
+
+To run client run the following command in **packages/client**:
+
+```bash
+yarn run start:dev
+```
 
 ## FAQ
 

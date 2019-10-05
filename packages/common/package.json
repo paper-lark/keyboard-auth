@@ -1,0 +1,35 @@
+{
+  "name": "keyboard-auth-common",
+  "version": "0.0.0",
+  "description": "Keyboard authenticator common package",
+  "scripts": {
+    "build": "rm -rf ./lib && yarn run build:ts && yarn run build:proto",
+    "build:ts": "tsc",
+    "build:proto": "./script/generate_proto.sh",
+    "prepare": "yarn run build"
+  },
+  "main": "index.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paper-lark/keyboard-auth.git"
+  },
+  "keywords": [
+    "keyboard"
+  ],
+  "author": "Max Zhuravsky <paperlark@yandex.com>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/paper-lark/keyboard-auth/issues"
+  },
+  "homepage": "https://github.com/paper-lark/keyboard-auth#readme",
+  "private": false,
+  "devDependencies": {
+    "grpc": "1.23.3",
+    "grpc-tools": "1.8.0",
+    "grpc_tools_node_protoc_ts": "2.5.5",
+    "typescript": "3.6.3"
+  },
+  "dependencies": {
+    "winston": "3.2.1"
+  }
+}

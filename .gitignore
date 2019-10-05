@@ -1,8 +1,10 @@
 # Auxiliary files
 node_modules
 misc
+*.tsbuildinfo
 
 # Build and generated files
 iohook
 build
+lib
 __generated__
