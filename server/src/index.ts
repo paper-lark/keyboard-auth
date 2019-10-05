@@ -7,8 +7,13 @@ import { initManager } from './core/manager';
 
 async function start() {
     // create connection to DB
-    const connection = await createConnection(config.db);
-    initManager(connection);
+    try {
+        const connection = await createConnection(config.db);
+        initManager(connection);
+    } catch (e) {
+        logger.error(`Failed to initialize session manager: `, e);
+        process.exit(1);
+    }
 
     // start server
     const server = new Server(config.port);

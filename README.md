@@ -1,6 +1,7 @@
 # Keyboard authenticator
 
 Keyboard authenticator is a client-server based application for authenticating users of computational system.
+Client side was tested on Windows 10 and macOS 10.14.5.
 
 ## Build
 

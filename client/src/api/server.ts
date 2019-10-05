@@ -1,11 +1,9 @@
 import { AuthenticatorClient } from './__generated__/authenticator_grpc_pb';
 import { credentials, Metadata, ClientDuplexStream } from 'grpc';
-import { Event, AuthEvent, Decision, KeyboardEvent } from './__generated__/authenticator_pb';
+import { Event, Decision } from './__generated__/authenticator_pb';
 import { KeyEvent } from '../utils/io';
 import { logger } from '../utils/logger';
-import { Timestamp } from 'google-protobuf/google/protobuf/timestamp_pb';
-import moment  from 'moment';
-import { keyname } from 'os-keycode';
+import { ProtoUtils } from '../utils/proto';
 
 export interface AuthenticatorConfig {
     host: string;
@@ -21,11 +19,10 @@ export default class Authenticator {
         config: AuthenticatorConfig,
         private onBlock?: () => void
     ) {
-        const authEvent = new Event();
-        const internalAuthEvent = new AuthEvent();
-        internalAuthEvent.setLogin(config.login);
-        internalAuthEvent.setToken(config.token);
-        authEvent.setAuth(internalAuthEvent);
+        const authEvent = ProtoUtils.mapAuthEventToProto(
+            config.login,
+            config.token
+        );
 
         this.client = new AuthenticatorClient(config.host, credentials.createInsecure());
         this.authStream = this.client.connect(new Metadata());
@@ -35,43 +32,14 @@ export default class Authenticator {
 
     public sendKeyboardEvent(e: KeyEvent) {
         // create event timestamp
-        // TODO: write tests
-        const currentMoment = moment();
-        const ts = new Timestamp();
-        ts.setNanos(currentMoment.milliseconds() * 1000);
-        ts.setSeconds(currentMoment.unix());
-
-        // map keycode to key character
-        const keyInfo = keyname(e.rawcode);
-        if (!keyInfo) {
-            logger.warn(`Keycode ${e.rawcode} failed to translate`);
-            return;
-        }
-        const keyChar = keyInfo.key ? keyInfo.key : keyInfo.keys[0]; // TODO: fix mapping login
-
-        // create proto event
-        const event = new Event();
-        const keyEvent = new KeyboardEvent();
-
-        keyEvent.setKey(keyChar);
-        keyEvent.setTs(ts);
-
-        switch (e.type) {
-        case 'keydown':
-            keyEvent.setType(KeyboardEvent.EventType.KEYDOWN);
-            break;
-        case 'keyup':
-            keyEvent.setType(KeyboardEvent.EventType.KEYUP);
-            break;
-        default:
-            throw new Error(`Unknown keyboard event type: ${e.type}`);
-        }
-        event.setKeyboard(keyEvent);
+        const event = ProtoUtils.mapKeyEventToProto(e);
 
         // send event
-        const ok = this.authStream.write(event);
-        if (ok) {
-            logger.debug(`Event sent: ${JSON.stringify(e)}`);
+        if (!!event) {
+            const ok = this.authStream.write(event);
+            if (ok) {
+                logger.debug(`Event sent: ${JSON.stringify(e)}`);
+            }
         }
     }
 
@@ -84,6 +52,7 @@ export default class Authenticator {
         this.authStream.on('data', this.onDecision);
         this.authStream.on('end', this.onDisconnect);
         this.authStream.on('close', this.onDisconnect);
+        this.authStream.on('cancelled', this.onDisconnect);
         this.authStream.on('error', this.onError);
     }
 

@@ -1,12 +1,13 @@
 import io from 'iohook';
-import { KeyLogger, KeyDownEvent, KeyUpEvent } from './io';
+import { KeyLogger } from './io';
 import range from 'lodash/range';
 
 jest.mock('iohook');
+// TODO: fix iohook loading its module and hence blocking tests
 
 describe('KeyLogger', () => {
-    const mockIO = io as jest.Mocked<typeof io>;
-    const keyDownEvent: KeyDownEvent = {
+    const mockIO = require('iohook') as jest.Mocked<typeof io>;
+    const keyDownEvent = {
         type: 'keydown',
         keycode: 10,
         rawcode: 10,
@@ -15,7 +16,7 @@ describe('KeyLogger', () => {
         ctrlKey: false,
         metaKey: false
     };
-    const keyUpEvent: KeyUpEvent = {
+    const keyUpEvent = {
         type: 'keyup',
         keycode: 10,
         rawcode: 10,

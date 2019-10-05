@@ -25,5 +25,5 @@ process.on('SIGINT', () => {
     logger.info({ message: 'Process interrupted, aborting....' });
     keyLogger.destruct();
     auth.shutdown();
-    process.exit();
+    process.exit(0);
 });

@@ -3,7 +3,7 @@ import moment from 'moment';
 import { AuthenticationEvent, KeyboardEvent, KeyboardEventType } from '../typings/common';
 
 export class ProtoUtils {
-    public static parseKeyboardEvent(event: Keyboard): KeyboardEvent {
+    public static mapKeyboardEventFromProto(event: Keyboard): KeyboardEvent {
         const ts = event.getTs();
         if (!ts) {
             throw Error('Missing timestamp in event');
@@ -22,7 +22,7 @@ export class ProtoUtils {
         };
     }
 
-    public static parseAuthEvent(event: Auth): AuthenticationEvent {
+    public static mapAuthEventFromProto(event: Auth): AuthenticationEvent {
         const login = event.getLogin();
         const token = event.getToken();
         if (!login) {

@@ -1,4 +1,6 @@
 import io from 'iohook';
+import { logger } from './logger';
+import moment from 'moment';
 
 export interface KeyEvent {
     keycode: number;
@@ -8,6 +10,7 @@ export interface KeyEvent {
     shiftKey: boolean;
     ctrlKey: boolean;
     metaKey: boolean;
+    created: moment.Moment;
 }
 
 export interface KeyUpEvent extends KeyEvent {
@@ -35,8 +38,10 @@ export class KeyLogger {
     }
 
     private onKeyDownHandler = (event: KeyDownEvent) => {
+        logger.debug(JSON.stringify(event));
         if (!this.pressedKeyCodes.has(event.keycode)) {
             this.pressedKeyCodes.add(event.keycode);
+            event.created = moment();
             this.onKeyDown(event);
         }
     }
@@ -44,6 +49,7 @@ export class KeyLogger {
     private onKeyUpHandler = (event: KeyUpEvent) => {
         if (this.pressedKeyCodes.has(event.keycode)) {
             this.pressedKeyCodes.delete(event.keycode);
+            event.created = moment();
             this.onKeyUp(event);
         }
     }

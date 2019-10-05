@@ -6,9 +6,11 @@ import { ProtoUtils } from '../utils/proto';
 import { Session } from '../core/session';
 import { getManager } from '../core/manager';
 import GRPCError from 'grpc-error';
+import { Mutex } from 'async-mutex';
 
 export default class Server {
     private internal: grpc.Server;
+    private readonly authenticationTimeout = 3000;
 
     constructor(port: number) {
         this.internal = new grpc.Server();
@@ -33,30 +35,55 @@ export default class Server {
 
     public connect(call: ServerDuplexStream<Event, Decision>): void {
         // create session object
-        let session: Session |  undefined;
+        const processingLock = new Mutex();
+        let session: Session | undefined;
+        const releaseSession = () => {
+            if (!!session) {
+                getManager().removeSession(session.getID());
+                session = undefined;
+            }
+        };
+
+        // create authentication timeout
+        const authTimeout = setTimeout(
+            () => {
+                logger.warn(`Authentication timed out`);
+                call.write(new GRPCError(`Credentials not received`, grpc.status.DEADLINE_EXCEEDED));
+                call.end();
+            },
+            this.authenticationTimeout
+        );
 
         // create handlers
         const handleEnd = () => {
-            !!session && getManager().removeSession(session.getID());
+            releaseSession();
             call.end();
         };
-
         const handleError = (e: Error) => {
-            logger.error(`Error occurred in session: `, e.message);
-            !!session && getManager().removeSession(session.getID());
+            logger.error(`Error occurred in session: `, e);
+            releaseSession();
             call.end();
         };
-
         const handleEvent = async (event: Event) => {
+            const release = await processingLock.acquire();
             try {
+                // cancel authentication timeout
+                clearTimeout(authTimeout);
+
+                // process event
                 const auth = event.getAuth();
                 const keyboard = event.getKeyboard();
                 if (!!auth) {
-                    const authEvent = ProtoUtils.parseAuthEvent(auth);
+                    // authentication received
+                    if (!!session) {
+                        throw new GRPCError('Second authentication event received', grpc.status.INVALID_ARGUMENT);
+                    }
+                    const authEvent = ProtoUtils.mapAuthEventFromProto(auth);
                     session = await getManager().createSession(authEvent.login, authEvent.token);
 
                 } else if (!!keyboard) {
-                    const keyboardEvent = ProtoUtils.parseKeyboardEvent(keyboard);
+                    // keyboard event received
+                    const keyboardEvent = ProtoUtils.mapKeyboardEventFromProto(keyboard);
                     if (!session) {
                         throw new GRPCError('Client is not authenticated', grpc.status.UNAUTHENTICATED);
                     }
@@ -70,9 +97,14 @@ export default class Server {
                     }
                 }
             } catch (e) {
-                logger.error(`Error occurred in session: `, e);
-                !!session && getManager().removeSession(session.getID());
-                call.end(); // TODO: send error to client
+                if (e instanceof GRPCError) {
+                    call.destroy(e);
+                } else {
+                    call.destroy(new GRPCError(e.message, grpc.status.INTERNAL));
+                }
+                releaseSession();
+            } finally {
+                release();
             }
         };
 
