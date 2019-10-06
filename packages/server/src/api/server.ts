@@ -64,6 +64,13 @@ export default class Server {
     },                             this.authenticationTimeout);
 
     // create handlers
+    const blockSession = () => {
+      const decision = new Decision();
+      const block = new BlockDecision();
+      block.setReason(`Authentication failed`);
+      decision.setBlock(block);
+      call.write(decision);
+    };
     const handleEnd = () => {
       releaseSession();
       call.end();
@@ -74,7 +81,7 @@ export default class Server {
       call.end();
     };
     const handleEvent = async (event: Event) => {
-      const release = await processingLock.acquire();
+      const releaseLock = await processingLock.acquire();
       try {
         // cancel authentication timeout
         clearTimeout(authTimeout);
@@ -104,16 +111,7 @@ export default class Server {
               grpc.status.UNAUTHENTICATED
             );
           }
-          const isBlocked = session.putKeyboardEvent(keyboardEvent);
-          if (isBlocked) {
-            const decision = new Decision();
-            const block = new BlockDecision();
-            block.setReason(
-              `server blocked session ${session.getID().toString()}`
-            );
-            decision.setBlock(block);
-            call.write(decision);
-          }
+          session.putKeyboardEvent(keyboardEvent);
         }
       } catch (e) {
         if (e instanceof GRPCError) {
@@ -123,7 +121,7 @@ export default class Server {
         }
         releaseSession();
       } finally {
-        release();
+        releaseLock();
       }
     };
 
