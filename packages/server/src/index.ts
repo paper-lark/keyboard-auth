@@ -6,24 +6,24 @@ import { createConnection } from 'typeorm';
 import { initManager } from './core/manager';
 
 async function start() {
-    // create connection to DB
-    try {
-        const connection = await createConnection(config.db);
-        initManager(connection);
-    } catch (e) {
-        logger.error(`Failed to initialize session manager: `, e);
-        process.exit(1);
-    }
+  // create connection to DB
+  try {
+    const connection = await createConnection(config.db);
+    initManager(connection);
+  } catch (e) {
+    logger.error(`Failed to initialize session manager: `, e);
+    process.exit(1);
+  }
 
-    // start server
-    const server = new Server(config.port);
+  // start server
+  const server = new Server(config.port);
 
-    // wait for system signal
-    process.once('SIGINT', async () => {
-        logger.info({ message: 'Process interrupted, aborting....' });
-        await server.shutdown();
-        process.exit();
-    });
+  // wait for system signal
+  process.once('SIGINT', async () => {
+    logger.info({ message: 'Process interrupted, aborting....' });
+    await server.shutdown();
+    process.exit();
+  });
 }
 
 // read configuration

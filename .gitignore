@@ -6,5 +6,5 @@ misc
 # Build and generated files
 iohook
 build
-lib
+packages/*/lib
 __generated__

@@ -11,19 +11,19 @@ const auth = new Authenticator(config, lockSystem);
 
 // initialize io hooks
 function onKeyDown(event: KeyDownEvent) {
-    logger.info(`Key is pressed: ${JSON.stringify(event)}`);
-    auth.sendKeyboardEvent(event);
+  logger.info(`Key is pressed: ${JSON.stringify(event)}`);
+  auth.sendKeyboardEvent(event);
 }
 function onKeyUp(event: KeyUpEvent) {
-    logger.info(`Key is released: ${JSON.stringify(event)}`);
-    auth.sendKeyboardEvent(event);
+  logger.info(`Key is released: ${JSON.stringify(event)}`);
+  auth.sendKeyboardEvent(event);
 }
 const keyLogger = new KeyLogger(onKeyDown, onKeyUp);
 
 // wait for system signal
 process.on('SIGINT', () => {
-    logger.info({ message: 'Process interrupted, aborting....' });
-    keyLogger.destruct();
-    auth.shutdown();
-    process.exit(0);
+  logger.info({ message: 'Process interrupted, aborting....' });
+  keyLogger.destruct();
+  auth.shutdown();
+  process.exit(0);
 });

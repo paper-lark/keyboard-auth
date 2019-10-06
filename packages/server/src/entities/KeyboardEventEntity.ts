@@ -4,18 +4,18 @@ import { KeyboardEventType } from '../typings/common';
 
 @Entity()
 export class KeyboardEventEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @ManyToOne(type => UserEntity, user => user.events)
-    user: UserEntity;
+  @ManyToOne(type => UserEntity, user => user.events)
+  user: UserEntity;
 
-    @Column()
-    key: string;
+  @Column()
+  key: string;
 
-    @Column({type: 'timestamp'})
-    timestamp: Date;
+  @Column({ type: 'timestamp' })
+  timestamp: Date;
 
-    @Column()
-    type: KeyboardEventType;
+  @Column()
+  type: KeyboardEventType;
 }

@@ -6,11 +6,12 @@
   "scripts": {
     "start:dev": "cross-env TS_NODE_FILES=true ts-node --project tsconfig.json src/index.ts",
     "test": "jest -c config/jest.js",
-    "lint": "prettier-tslint fix '**/*.ts'",
     "create:db": "docker run -d --name project_pg -p 12001:5432 postgres:11 && docker exec -it project_pg psql -U postgres -c 'create database project'",
     "stop:db": "docker stop project_pg",
     "start:db": "docker start project_pg",
-    "connect:db": "pgcli --host=127.0.0.1 --port=12001 --dbname=project --username=postgres"
+    "connect:db": "pgcli --host=127.0.0.1 --port=12001 --dbname=project --username=postgres",
+    "lint": "prettier-tslint fix '**/*.ts'",
+    "precommit": "lint-staged"
   },
   "repository": {
     "type": "git",
@@ -60,5 +61,11 @@
     "tslint-config-prettier": "1.18.0",
     "tslint-config-security": "1.16.0",
     "typescript": "3.6.3"
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "yarn run lint",
+      "git add"
+    ]
   }
 }

@@ -6,7 +6,8 @@
   "scripts": {
     "start:dev": "cross-env TS_NODE_FILES=true ts-node --project tsconfig.json src/index.ts",
     "test": "jest -c config/jest.js",
-    "lint": "prettier-tslint fix '**/*.ts'"
+    "lint": "prettier-tslint fix '**/*.ts'",
+    "precommit": "lint-staged"
   },
   "repository": {
     "type": "git",
@@ -61,6 +62,12 @@
     ],
     "targets": [
       "node-64"
+    ]
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "yarn run lint",
+      "git add"
     ]
   }
 }

@@ -6,7 +6,9 @@
     "build": "rm -rf ./lib && yarn run build:ts && yarn run build:proto",
     "build:ts": "tsc",
     "build:proto": "./script/generate_proto.sh",
-    "prepare": "yarn run build"
+    "prepare": "yarn run build",
+    "lint": "prettier-tslint fix '**/*.ts'",
+    "precommit": "lint-staged"
   },
   "main": "index.ts",
   "repository": {
@@ -22,7 +24,6 @@
     "url": "https://github.com/paper-lark/keyboard-auth/issues"
   },
   "homepage": "https://github.com/paper-lark/keyboard-auth#readme",
-  "private": false,
   "devDependencies": {
     "grpc": "1.23.3",
     "grpc-tools": "1.8.0",
@@ -31,5 +32,11 @@
   },
   "dependencies": {
     "winston": "3.2.1"
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "yarn run lint",
+      "git add"
+    ]
   }
 }

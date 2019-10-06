@@ -1,17 +1,17 @@
 import moment from 'moment';
 
 export enum KeyboardEventType {
-    KEYUP,
-    KEYDOWN
+  KEYUP,
+  KEYDOWN
 }
 
 export interface KeyboardEvent {
-    type: KeyboardEventType;
-    timestamp: moment.Moment;
-    key: string;
+  type: KeyboardEventType;
+  timestamp: moment.Moment;
+  key: string;
 }
 
 export interface AuthenticationEvent {
-    login: string;
-    token: string;
+  login: string;
+  token: string;
 }
