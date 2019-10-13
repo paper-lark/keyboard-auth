@@ -8,8 +8,12 @@ class Manager {
 
   constructor(private db: Connection) {}
 
-  public async createSession(login: string, token: string): Promise<Session> {
-    const session = await Session.create(login, token, this.db);
+  public async createSession(
+    login: string,
+    token: string,
+    onBlock?: () => void
+  ): Promise<Session> {
+    const session = await Session.create(login, token, this.db, onBlock);
     if (this.session.size > Manager.MAX_SESSIONS) {
       throw new Error('Too many session on the server');
     }

@@ -71,15 +71,18 @@ export default class Server {
       decision.setBlock(block);
       call.write(decision);
     };
+
     const handleEnd = () => {
       releaseSession();
       call.end();
     };
+
     const handleError = (e: Error) => {
       logger.error(`Error occurred in session: `, e);
       releaseSession();
       call.end();
     };
+
     const handleEvent = async (event: Event) => {
       const releaseLock = await processingLock.acquire();
       try {
@@ -100,7 +103,8 @@ export default class Server {
           const authEvent = ProtoUtils.mapAuthEventFromProto(auth);
           session = await getManager().createSession(
             authEvent.login,
-            authEvent.token
+            authEvent.token,
+            blockSession
           );
         } else if (!!keyboard) {
           // keyboard event received
