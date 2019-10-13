@@ -1,6 +1,5 @@
 # Auxiliary files
 node_modules
-misc
 *.tsbuildinfo
 
 # Build and generated files

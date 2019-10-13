@@ -7,7 +7,7 @@
     "start:dev": "cross-env TS_NODE_FILES=true ts-node --project tsconfig.json src/index.ts",
     "test": "jest -c config/jest.js",
     "lint": "prettier-tslint fix '**/*.ts'",
-    "build": "yarn run build:rollup && yarn run build:pkg",
+    "build": "bash scripts/build.sh",
     "build:rollup": "rollup -c",
     "build:pkg": "pkg lib/bundle.js --target host --output build/auth-client --options max_old_space_size=4096",
     "precommit": "lint-staged"

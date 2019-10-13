@@ -16,7 +16,5 @@ export default {
     typescript(),
     uglify()
   ]
-  // FIXME: minify node_modules too
-  // FIXME: add cross-platform builds
-  // FIXME: automate building a release
+  // TODO: minify node_modules too
 }
