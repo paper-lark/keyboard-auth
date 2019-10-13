@@ -7,6 +7,9 @@
     "start:dev": "cross-env TS_NODE_FILES=true ts-node --project tsconfig.json src/index.ts",
     "test": "jest -c config/jest.js",
     "lint": "prettier-tslint fix '**/*.ts'",
+    "build": "yarn run build:rollup && yarn run build:pkg",
+    "build:rollup": "rollup -c",
+    "build:pkg": "pkg lib/bundle.js --target host --output build/auth-client --options max_old_space_size=4096",
     "precommit": "lint-staged"
   },
   "repository": {
@@ -27,12 +30,10 @@
     "grpc": "1.23.3",
     "iohook": "0.6.1",
     "keyboard-auth-common": "^0.0.0",
-    "lock-system": "2.0.0",
     "lodash": "4.17.15",
     "mem": ">=4.0.0",
     "moment": "2.24.0",
-    "os-keycode": "1.0.0",
-    "typescript": "3.6.3"
+    "os-keycode": "1.0.0"
   },
   "devDependencies": {
     "@types/google-protobuf": "3.7.1",
@@ -42,10 +43,16 @@
     "@types/node": "12.7.5",
     "cross-env": "6.0.3",
     "jest": "24.9.0",
+    "pkg": "4.4.0",
     "prettier": "1.18.2",
     "prettier-tslint": "0.4.2",
+    "rollup": "1.23.1",
+    "rollup-plugin-typescript": "1.0.1",
+    "rollup-plugin-typescript2": "0.24.3",
+    "rollup-plugin-uglify": "6.0.3",
     "ts-jest": "24.1.0",
     "ts-node": "8.3.0",
+    "tslib": "1.10.0",
     "tslint": "5.20.0",
     "tslint-config-prettier": "1.18.0",
     "tslint-config-security": "1.16.0",
