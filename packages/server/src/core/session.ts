@@ -3,14 +3,22 @@ import { Guid } from 'guid-typescript';
 import { Connection } from 'typeorm';
 import { UserEntity } from '../entities/UserEntity';
 import { KeyboardEvent } from '../typings/common';
-import { KeyboardEventEntity } from '../entities/KeyboardEventEntity';
+import { Window, KeyboardInteraction } from './window';
+import { KeyboardInteractionEntity } from '../entities/KeyboardInteractionEntity';
+import { AuthenticationModel } from './auth';
+import moment = require('moment');
 
+// TODO: write tests
 export class Session {
+  private static interactionsLimit = 100; // TODO: change limit
+  private static deviationLimit: number = 100; // TODO: change limit
   private id: Guid;
   private login: string;
   private db: Connection;
   private user: UserEntity;
   private onBlock?: () => void;
+  private window: Window;
+  private auth: AuthenticationModel;
 
   public static async create(
     login: string,
@@ -19,7 +27,6 @@ export class Session {
     onBlock?: () => void
   ): Promise<Session> {
     // authenticate
-    // TODO: write tests
     const userEntity = await db
       .getRepository(UserEntity)
       .findOne({ login, token });
@@ -28,39 +35,36 @@ export class Session {
     }
 
     // create session
-    const session = new Session(login, userEntity, db, onBlock);
-    logger.info(
-      `Creating session ${session.id} for user ${session.login} (token: ${token})`
-    );
-    return session;
+    const interactions = await this.findUserInteractions(db, userEntity);
+    return new Session(login, userEntity, db, interactions, onBlock);
+  }
+
+  private static async findUserInteractions(
+    db: Connection,
+    userEntity: UserEntity
+  ): Promise<KeyboardInteraction[] | undefined> {
+    let interactionEntities: KeyboardInteractionEntity[] = await db
+      .getRepository(KeyboardInteractionEntity)
+      .find({ where: { user: userEntity }, take: this.interactionsLimit });
+
+    if (interactionEntities.length === this.interactionsLimit) {
+      return interactionEntities.map(entity => ({
+        key: entity.key,
+        press: moment(entity.press),
+        release: moment(entity.release)
+      }));
+    }
+
+    return undefined;
   }
 
   public putKeyboardEvent(event: KeyboardEvent) {
-    // log event
     logger.debug(
       `Received new keyboard event in session ${this.id}: ${JSON.stringify(
         event
       )}`
     );
-
-    // authenticate
-    if (!this.shouldBlockSession(event)) {
-      // save event to DB
-      const eventEntity = new KeyboardEventEntity();
-      eventEntity.key = event.key;
-      eventEntity.timestamp = event.timestamp.toDate();
-      eventEntity.type = event.type;
-      eventEntity.user = this.user;
-      this.db
-        .getRepository(KeyboardEventEntity)
-        .save(eventEntity)
-        .then(() => logger.debug(`Saved keyboard event for user ${this.login}`))
-        .catch(e => logger.error(`Failed to save keyboard event: `, e));
-      return;
-    }
-
-    // block session
-    !!this.onBlock && this.onBlock();
+    this.window.add(event);
   }
 
   public getID(): Guid {
@@ -75,6 +79,7 @@ export class Session {
     login: string,
     userEntity: UserEntity,
     db: Connection,
+    gt?: KeyboardInteraction[],
     onBlock?: () => void
   ) {
     this.id = Guid.create();
@@ -82,10 +87,37 @@ export class Session {
     this.user = userEntity;
     this.db = db;
     this.onBlock = onBlock;
+    this.window = new Window(
+      this.onSaveKeyboardInteraction,
+      this.onAuthenticate
+    );
+    logger.info(`Creating session ${this.id} for user '${this.login}'`);
+    if (!!gt) {
+      logger.debug(`Authentication enabled in session ${this.id}`);
+      this.auth = new AuthenticationModel(gt, Session.deviationLimit);
+    } else {
+      logger.debug(`Authentication disabled in session ${this.id}`);
+    }
   }
 
-  private shouldBlockSession(event: KeyboardEvent): boolean {
-    // TODO: implement
-    return Math.random() > 0.95;
-  }
+  private onAuthenticate = (window: KeyboardInteraction[]) => {
+    if (!!this.auth && !this.auth.authenticate(window)) {
+      !!this.onBlock && this.onBlock();
+    }
+  };
+
+  private onSaveKeyboardInteraction = (interaction: KeyboardInteraction) => {
+    const entity = new KeyboardInteractionEntity();
+    entity.key = interaction.key;
+    entity.press = interaction.press.toDate();
+    entity.release = interaction.release.toDate();
+    entity.user = this.user;
+    this.db
+      .getRepository(KeyboardInteractionEntity)
+      .save(entity)
+      .then(() =>
+        logger.debug(`Saved keyboard interaction for user ${this.login}`)
+      )
+      .catch(e => logger.error(`Failed to save keyboard interaction: `, e));
+  };
 }

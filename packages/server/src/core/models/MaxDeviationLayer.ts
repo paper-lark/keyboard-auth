@@ -1,4 +1,5 @@
 import * as tf from '@tensorflow/tfjs-node';
+import { logger } from 'keyboard-auth-common/lib/utils/logger';
 
 /**
  * MaxDeviationLayer implements a pseudometric-based layer.
@@ -24,9 +25,12 @@ export class MaxDeviationLayer extends tf.layers.Layer {
   public computeOutputShape(
     inputShape: tf.Shape | tf.Shape[]
   ): tf.Shape | tf.Shape[] {
+    logger.debug(`Shape in deviation: ${JSON.stringify(inputShape)}`);
     if (inputShape.length !== 1 || inputShape[0] !== this.gt.shape[1]) {
       throw new Error(
-        `Invalid vector dimensions, expected: [*, [${this.gt.shape[1]}], received: ${inputShape}`
+        `Invalid vector dimensions, expected: [*, ${
+          this.gt.shape[1]
+        }], received: ${JSON.stringify(inputShape)}`
       );
     }
 

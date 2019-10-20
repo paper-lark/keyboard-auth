@@ -1,15 +1,15 @@
 import moment from 'moment';
 import { KeyboardEvent, KeyboardEventType } from '../typings/common';
 
-interface KeyboardInteraction {
+export interface KeyboardInteraction {
   key: string;
   press: moment.Moment;
   release: moment.Moment;
 }
 
 export class Window {
-  public static readonly minWindowSize = 100;
-  public static readonly maxWindowSize = 300;
+  public static readonly minWindowSize = 10; // 100;
+  public static readonly maxWindowSize = 15; // 300;
   public static readonly maxPauseDuration = moment.duration(40, 'seconds');
 
   private window: KeyboardInteraction[] = [];

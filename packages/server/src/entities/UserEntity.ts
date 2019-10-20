@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
-import { KeyboardEventEntity } from './KeyboardEventEntity';
+import { KeyboardInteractionEntity } from './KeyboardInteractionEntity';
 
 @Entity()
 export class UserEntity {
@@ -9,6 +9,6 @@ export class UserEntity {
   @Column()
   token: string;
 
-  @OneToMany(type => KeyboardEventEntity, event => event.user)
-  events: KeyboardEventEntity;
+  @OneToMany(type => KeyboardInteractionEntity, event => event.user)
+  interactions: KeyboardInteractionEntity;
 }

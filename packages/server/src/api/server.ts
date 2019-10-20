@@ -78,7 +78,6 @@ export default class Server {
     };
 
     const handleError = (e: Error) => {
-      logger.error(`Error occurred in session: `, e);
       releaseSession();
       call.end();
     };
@@ -118,6 +117,8 @@ export default class Server {
           session.putKeyboardEvent(keyboardEvent);
         }
       } catch (e) {
+        logger.error('Error occurred in session: ', e);
+        logger.error(e.stack);
         if (e instanceof GRPCError) {
           call.destroy(e);
         } else {
