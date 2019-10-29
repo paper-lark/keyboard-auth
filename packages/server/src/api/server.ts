@@ -6,7 +6,7 @@ import {
 import grpc, { ServerDuplexStream } from 'grpc';
 import { AuthenticatorService } from 'keyboard-auth-common/lib/api/authenticator_grpc_pb';
 import { logger } from 'keyboard-auth-common/lib/utils/logger';
-import { ProtoUtils } from '../utils/proto';
+import { ProtoUtils } from '../utils/ProtoUtils';
 import { Session } from '../core/session';
 import { getManager } from '../core/manager';
 import GRPCError from 'grpc-error';
@@ -83,7 +83,7 @@ export default class Server {
     };
 
     const handleEvent = async (event: Event) => {
-      const releaseLock = await processingLock.acquire();
+      const releaseLock = await processingLock.acquire(); // TODO: refactor
       try {
         // cancel authentication timeout
         clearTimeout(authTimeout);

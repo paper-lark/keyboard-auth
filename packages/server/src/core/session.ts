@@ -2,11 +2,12 @@ import { logger } from 'keyboard-auth-common/lib/utils/logger';
 import { Guid } from 'guid-typescript';
 import { Connection } from 'typeorm';
 import { UserEntity } from '../entities/UserEntity';
-import { KeyboardEvent } from '../typings/common';
-import { Window, KeyboardInteraction } from './window';
+import { KeyboardEvent, KeyboardInteraction } from '../typings/common';
 import { KeyboardInteractionEntity } from '../entities/KeyboardInteractionEntity';
 import { AuthenticationModel } from './auth';
-import moment = require('moment');
+import moment from 'moment';
+import { Window } from './window';
+import { InteractionConstructor } from './interaction';
 
 // TODO: write tests
 export class Session {
@@ -17,6 +18,7 @@ export class Session {
   private db: Connection;
   private user: UserEntity;
   private onBlock?: () => void;
+  private interaction: InteractionConstructor;
   private window: Window;
   private auth: AuthenticationModel;
 
@@ -64,7 +66,7 @@ export class Session {
         event
       )}`
     );
-    this.window.add(event);
+    this.interaction.add(event);
   }
 
   public getID(): Guid {
@@ -91,6 +93,7 @@ export class Session {
       this.onSaveKeyboardInteraction,
       this.onAuthenticate
     );
+    this.interaction = new InteractionConstructor(this.window.add);
     logger.info(`Creating session ${this.id} for user '${this.login}'`);
     if (!!gt) {
       logger.debug(`Authentication enabled in session ${this.id}`);

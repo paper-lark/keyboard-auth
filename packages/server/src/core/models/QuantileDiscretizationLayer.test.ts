@@ -14,7 +14,7 @@ describe('QuantileDiscretizationLayer', () => {
 
   it('should calculate result correctly when all feature values are equal', () => {
     const vector = tf.tensor2d([[1, 1, 1], [1, 1, 1], [1, 1, 1], [1, 1, 1]]);
-    const expected = tf.tensor2d([[1, 1, 1], [1, 1, 1], [0, 0, 0], [0, 0, 0]]);
+    const expected = tf.tensor2d([[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]);
 
     const model = new QuantileDiscretizationLayer(2);
     const actual = model.apply(vector) as tf.Tensor1D;

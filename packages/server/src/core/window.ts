@@ -1,11 +1,5 @@
 import moment from 'moment';
-import { KeyboardEvent, KeyboardEventType } from '../typings/common';
-
-export interface KeyboardInteraction {
-  key: string;
-  press: moment.Moment;
-  release: moment.Moment;
-}
+import { KeyboardInteraction } from '../typings/common';
 
 export class Window {
   public static readonly minWindowSize = 10; // 100;
@@ -13,75 +7,40 @@ export class Window {
   public static readonly maxPauseDuration = moment.duration(40, 'seconds');
 
   private window: KeyboardInteraction[] = [];
-  private unfinishedInteractions: { [key: string]: KeyboardEvent } = {};
-  private lastClickMoment?: moment.Moment;
+  private lastPressMoment?: moment.Moment = undefined;
 
   constructor(
-    private saveInteraction?: (interaction: KeyboardInteraction) => void,
-    private authenticate?: (window: KeyboardInteraction[]) => void
+    private onPopInteraction?: (interaction: KeyboardInteraction) => void,
+    private onWindowReady?: (window: KeyboardInteraction[]) => void
   ) {}
 
-  public add(event: KeyboardEvent) {
-    switch (event.type) {
-      case KeyboardEventType.KEYDOWN:
-        this.processKeyPress(event);
-        break;
-      case KeyboardEventType.KEYUP:
-        this.processKeyRelease(event);
-        break;
-      default:
-        throw new Error(`Unknown keyboard event type: ${event.type}`);
+  public add = (event: KeyboardInteraction) => {
+    // calculate pause between successive clicks
+    const shouldClearWindow =
+      !!this.lastPressMoment &&
+      Window.maxPauseDuration.asMilliseconds() <
+        moment
+          .duration(event.press.diff(this.lastPressMoment))
+          .asMilliseconds();
+    this.lastPressMoment = event.press;
+
+    // clear window if pause limit was exceeded
+    if (shouldClearWindow) {
+      this.window.splice(0, this.window.length);
     }
-  }
+    this.window.push(event);
 
-  private processKeyPress(pressEvent: KeyboardEvent) {
-    // check pause between succeeding key presses
-    if (!!this.lastClickMoment) {
-      const pauseDuration = moment.duration(
-        pressEvent.timestamp.diff(this.lastClickMoment)
-      );
-      if (
-        Window.maxPauseDuration.asMilliseconds() <
-        pauseDuration.asMilliseconds()
-      ) {
-        // pause limit is exceeded – clear the window
-        this.window.splice(0, this.window.length);
-        this.unfinishedInteractions = {};
-      }
-    }
-
-    // add press to unfinished interactions
-    this.lastClickMoment = pressEvent.timestamp;
-    this.unfinishedInteractions[pressEvent.key] = pressEvent;
-  }
-
-  private processKeyRelease(releaseEvent: KeyboardEvent) {
-    // find associated key press
-    const pressEvent = this.unfinishedInteractions[releaseEvent.key];
-    delete this.unfinishedInteractions[releaseEvent.key];
-    if (!pressEvent) {
-      return;
-    }
-
-    // add new interaction
-    const interaction: KeyboardInteraction = {
-      key: releaseEvent.key,
-      press: pressEvent.timestamp,
-      release: releaseEvent.timestamp
-    };
-    this.window.push(interaction);
-
-    // check if old interactions should be disregarded
+    // pop old interactions
     if (this.window.length > Window.maxWindowSize) {
       const oldestInteraction = this.window.shift();
-      !!this.saveInteraction &&
+      !!this.onPopInteraction &&
         !!oldestInteraction &&
-        this.saveInteraction(oldestInteraction);
+        this.onPopInteraction(oldestInteraction);
     }
 
-    // run authentication model
+    // signal that window is ready
     if (this.window.length >= Window.minWindowSize) {
-      !!this.authenticate && this.authenticate(this.window);
+      !!this.onWindowReady && this.onWindowReady(this.window);
     }
-  }
+  };
 }

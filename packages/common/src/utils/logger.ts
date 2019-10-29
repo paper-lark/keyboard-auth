@@ -10,8 +10,6 @@ export const logger = winston.createLogger({
     winston.format.printf(
       info => `[${info.timestamp}] ${info.level}: ${info.message}`
     )
-    // TODO: errors are not printed in the correct format
-    //   See: https://github.com/winstonjs/winston/issues/1498
   ),
 
   transports: [new winston.transports.Console()]

@@ -3,8 +3,8 @@ import { logger } from 'keyboard-auth-common/lib/utils/logger';
 
 /**
  * MaxDeviationLayer implements a pseudometric-based layer.
- * Maximum deviation metric is defined as ⍴(x, y) = max_{i}(|x_i - y_i|).
- * Deviation from the ground truth set is defined as the sum of metric value.
+ * Maximum deviation metric for a single feature is defined as ⍴(x, y) = max_{i}(|x_i - y_i|).
+ * Deviation from the ground truth set is defined as the average of metric value for each feature.
  */
 export class MaxDeviationLayer extends tf.layers.Layer {
   /**

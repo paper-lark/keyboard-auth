@@ -37,24 +37,33 @@ export class QuantileDiscretizationLayer extends tf.layers.Layer {
     const n = inputs.shape[1];
 
     // discretisize each feature
-    // FIXME: same values should be in the same bucket
     const discretisizedFeatures: Array<number[]> = [];
     _.range(0, n).forEach(j => {
       // sort feature values
       const feature = tf.slice(inputs, [0, j], [-1, 1]);
       const { indices } = feature.as1D().topk(m, true); // sorted in the descending order
       const idxBuffer = (indices as tf.Tensor1D).bufferSync();
+      const featureBuffer = (feature as tf.Tensor1D).bufferSync();
 
       // discretisize each feature value
-      let currentBin = this.bins - 1;
-      const elementsInBin = Math.round(m / this.bins);
+      let currentBin = 0;
+      const elementsInBin = m / this.bins;
       const discretisizedValues: number[] = Array.from({ length: m }, () => 0);
+      let previousValue: number | null = null;
       _.range(0, m).forEach(i => {
-        if (m - i - 1 < Math.round(currentBin * elementsInBin)) {
+        const currentIndex = idxBuffer.get(m - i - 1);
+        const currentValue = featureBuffer.get(currentIndex);
+        if (
+          // time to switch to the next bucket
+          i >= (currentBin + 1) * elementsInBin &&
+          // equal values should appear in one bucket
+          previousValue !== currentValue
+        ) {
           // proceed to the next bin
-          currentBin--;
+          currentBin++;
         }
-        discretisizedValues[idxBuffer.get(i)] = currentBin;
+        previousValue = currentValue;
+        discretisizedValues[currentIndex] = currentBin;
       });
       discretisizedFeatures.push(discretisizedValues);
     });

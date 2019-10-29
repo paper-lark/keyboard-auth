@@ -15,3 +15,9 @@ export interface AuthenticationEvent {
   login: string;
   token: string;
 }
+
+export interface KeyboardInteraction {
+  key: string;
+  press: moment.Moment;
+  release: moment.Moment;
+}

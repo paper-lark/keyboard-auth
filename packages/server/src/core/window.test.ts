@@ -2,6 +2,7 @@ import noop from 'lodash/noop';
 import { Window } from './window';
 import { KeyboardEvent, KeyboardEventType } from '../typings/common';
 import moment from 'moment';
+import { InteractionConstructor } from './interaction';
 
 describe('Window', () => {
   const mockSave = jest.fn(noop);
@@ -84,8 +85,9 @@ describe('Window', () => {
 
   it('should not authenticate until minimum size is reached', () => {
     const window = new Window(mockSave, mockAuth);
-    window.add(events[0]);
-    window.add(events[1]);
+    const interaction = new InteractionConstructor(window.add);
+    interaction.add(events[0]);
+    interaction.add(events[1]);
 
     expect(mockSave.mock.calls.length).toBe(0);
     expect(mockAuth.mock.calls.length).toBe(0);
@@ -93,10 +95,11 @@ describe('Window', () => {
 
   it('should authenticate once minimum size is reached', () => {
     const window = new Window(mockSave, mockAuth);
-    window.add(events[0]);
-    window.add(events[1]);
-    window.add(events[2]);
-    window.add(events[3]);
+    const interaction = new InteractionConstructor(window.add);
+    interaction.add(events[0]);
+    interaction.add(events[1]);
+    interaction.add(events[2]);
+    interaction.add(events[3]);
 
     expect(mockSave.mock.calls.length).toBe(0);
     expect(mockAuth.mock.calls.length).toBe(1);
@@ -116,12 +119,13 @@ describe('Window', () => {
 
   it('should clear window once pause exceeds the limit', () => {
     const window = new Window(mockSave, mockAuth);
-    window.add(events[2]);
-    window.add(events[3]);
-    window.add(events[4]);
-    window.add(events[5]);
-    window.add(events[6]);
-    window.add(events[7]);
+    const interaction = new InteractionConstructor(window.add);
+    interaction.add(events[2]);
+    interaction.add(events[3]);
+    interaction.add(events[4]);
+    interaction.add(events[5]);
+    interaction.add(events[6]);
+    interaction.add(events[7]);
 
     expect(mockSave.mock.calls.length).toBe(0);
     expect(mockAuth.mock.calls.length).toBe(1);
@@ -141,14 +145,15 @@ describe('Window', () => {
 
   it('should save old events when removing them', () => {
     const window = new Window(mockSave, mockAuth);
-    window.add(events[4]);
-    window.add(events[5]);
-    window.add(events[6]);
-    window.add(events[7]);
-    window.add(events[8]);
-    window.add(events[9]);
-    window.add(events[10]);
-    window.add(events[11]);
+    const interaction = new InteractionConstructor(window.add);
+    interaction.add(events[4]);
+    interaction.add(events[5]);
+    interaction.add(events[6]);
+    interaction.add(events[7]);
+    interaction.add(events[8]);
+    interaction.add(events[9]);
+    interaction.add(events[10]);
+    interaction.add(events[11]);
 
     expect(mockAuth.mock.calls.length).toBe(3);
     expect(mockSave.mock.calls.length).toBe(1);
