@@ -2,8 +2,8 @@ import moment from 'moment';
 import { KeyboardInteraction } from '../typings/common';
 
 export class Window {
-  public static readonly minWindowSize = 10; // 100;
-  public static readonly maxWindowSize = 15; // 300;
+  public static readonly minWindowSize = 100;
+  public static readonly maxWindowSize = 300;
   public static readonly maxPauseDuration = moment.duration(40, 'seconds');
 
   private window: KeyboardInteraction[] = [];

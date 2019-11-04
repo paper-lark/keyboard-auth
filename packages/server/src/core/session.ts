@@ -11,7 +11,7 @@ import { InteractionConstructor } from './interaction';
 
 // TODO: write tests
 export class Session {
-  private static interactionsLimit = 100; // TODO: change limit
+  private static interactionsLimit = 400; // TODO: change limit
   private static deviationLimit: number = 100; // TODO: change limit
   private id: Guid;
   private login: string;

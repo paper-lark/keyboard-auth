@@ -1,0 +1,48 @@
+{
+  "name": "keyboard-auth-test",
+  "version": "0.0.0",
+  "description": "Keyboard authenticator test stand",
+  "scripts": {
+    "start:dev": "cross-env TS_NODE_FILES=true ts-node --project tsconfig.json src/index.ts",
+    "lint": "prettier-tslint fix '**/*.ts'",
+    "precommit": "lint-staged"
+  },
+  "main": "index.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paper-lark/keyboard-auth.git"
+  },
+  "keywords": [
+    "keyboard"
+  ],
+  "author": "Max Zhuravsky <paperlark@yandex.com>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/paper-lark/keyboard-auth/issues"
+  },
+  "homepage": "https://github.com/paper-lark/keyboard-auth#readme",
+  "devDependencies": {
+    "@types/node": "12.7.5",
+    "cross-env": "6.0.3",
+    "prettier": "1.18.2",
+    "prettier-tslint": "0.4.2",
+    "ts-node": "8.3.0",
+    "tslint": "5.20.0",
+    "tslint-config-prettier": "1.18.0",
+    "tslint-config-security": "1.16.0",
+    "typescript": "3.6.3"
+  },
+  "dependencies": {
+    "data-forge": "1.7.7",
+    "data-forge-fs": "0.0.7",
+    "keyboard-auth-common": "0.0.0",
+    "moment": "2.24.0",
+    "node-fetch-polyfill": "2.0.6"
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "yarn run lint",
+      "git add"
+    ]
+  }
+}
