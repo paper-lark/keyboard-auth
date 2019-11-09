@@ -31,4 +31,12 @@ describe('ArrayUtils', () => {
       expect(actual).toEqual(expected);
     });
   });
+
+  describe('shuffle', () => {
+    it('shuffles array', () => {
+      const a = [1, 5, 4, 3, 2];
+      const actual = ArrayUtils.shuffle(a);
+      expect(actual.sort()).toEqual(a.sort());
+    });
+  });
 });

@@ -2,12 +2,15 @@ import { logger } from 'keyboard-auth-common/lib/utils/logger';
 import { Guid } from 'guid-typescript';
 import { Connection } from 'typeorm';
 import { UserEntity } from '../entities/UserEntity';
-import { KeyboardEvent, KeyboardInteraction } from '../typings/common';
+import {
+  KeyboardEvent,
+  KeyboardInteraction
+} from 'keyboard-auth-common/lib/typings/common';
 import { KeyboardInteractionEntity } from '../entities/KeyboardInteractionEntity';
-import { AuthenticationModel } from './auth';
+import { AuthenticationModel } from 'keyboard-auth-common/lib/core/auth';
 import moment from 'moment';
-import { Window } from './window';
-import { InteractionConstructor } from './interaction';
+import { Window } from 'keyboard-auth-common/lib/core/window';
+import { InteractionConstructor } from 'keyboard-auth-common/lib/core/interaction';
 
 // TODO: write tests
 export class Session {

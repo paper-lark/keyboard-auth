@@ -7,7 +7,7 @@ import {
   AuthenticationEvent,
   KeyboardEvent,
   KeyboardEventType
-} from '../typings/common';
+} from 'keyboard-auth-common/lib/typings/common';
 
 export class ProtoUtils {
   public static mapKeyboardEventFromProto(event: Keyboard): KeyboardEvent {

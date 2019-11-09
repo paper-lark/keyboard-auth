@@ -1,7 +1,7 @@
 import * as tf from '@tensorflow/tfjs-node';
 import _ from 'lodash';
 import { LayerArgs } from '@tensorflow/tfjs-layers/dist/engine/topology';
-import { logger } from 'keyboard-auth-common/lib/utils/logger';
+import { logger } from '../../utils/logger';
 
 /**
  * QuantileDiscretizationLayer implements a quantile discretization layer.

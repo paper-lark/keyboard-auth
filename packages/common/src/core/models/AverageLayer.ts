@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs-node';
-import { logger } from 'keyboard-auth-common/lib/utils/logger';
+import { logger } from '../../utils/logger';
 
 /**
  * AverageLayer calculates average value of each feature in the window.

@@ -1,9 +1,12 @@
 import { IDataFrame, DataFrame } from 'data-forge';
 import { readFileSync } from 'data-forge-fs';
-import { KeyboardEvent, KeyboardEventType } from '../typings/common';
 import moment from 'moment';
 import fs from 'fs';
 import path from 'path';
+import {
+  KeyboardEvent,
+  KeyboardEventType
+} from 'keyboard-auth-common/lib/typings/common';
 
 export class DatasetExtractor {
   constructor(

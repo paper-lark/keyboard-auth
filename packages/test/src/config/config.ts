@@ -1,6 +1,8 @@
 export interface Configuration {
   dataPath: string;
   featuresFile: string;
+  debug: boolean;
+  maxDatasetSize: number;
 }
 
 export default class ConfigurationSource {
@@ -16,7 +18,9 @@ export default class ConfigurationSource {
 
     return {
       dataPath: process.env.DATA_PATH,
-      featuresFile: process.env.FEATURES_FILENAME
+      featuresFile: process.env.FEATURES_FILENAME,
+      debug: true,
+      maxDatasetSize: 350
     };
   }
 }

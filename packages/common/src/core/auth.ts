@@ -1,7 +1,7 @@
 import * as tf from '@tensorflow/tfjs-node';
 import { QuantileDiscretizationLayer } from './models/QuantileDiscretizationLayer';
 import { MaxDeviationLayer } from './models/MaxDeviationLayer';
-import { logger } from 'keyboard-auth-common/lib/utils/logger';
+import { logger } from '../utils/logger';
 import { KeyboardInteraction } from '../typings/common';
 import { FeatureExtractor } from '../utils/FeatureExtractor';
 import { ArrayUtils } from '../utils/ArrayUtils';

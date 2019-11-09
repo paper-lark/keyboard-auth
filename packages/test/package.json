@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Keyboard authenticator test stand",
   "scripts": {
-    "start:dev": "cross-env TS_NODE_FILES=true ts-node --project tsconfig.json src/index.ts",
+    "start": "node --max_old_space_size=8192 -r ts-node/register ./src/index.ts",
     "lint": "prettier-tslint fix '**/*.ts'",
     "precommit": "lint-staged"
   },
@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/paper-lark/keyboard-auth#readme",
   "devDependencies": {
+    "@types/lodash": "4.14.144",
     "@types/node": "12.7.5",
     "cross-env": "6.0.3",
     "prettier": "1.18.2",
@@ -36,6 +37,7 @@
     "data-forge": "1.7.7",
     "data-forge-fs": "0.0.7",
     "keyboard-auth-common": "0.0.0",
+    "lodash": "4.17.15",
     "moment": "2.24.0",
     "node-fetch-polyfill": "2.0.6"
   },

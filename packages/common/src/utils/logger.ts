@@ -7,6 +7,7 @@ export const logger = winston.createLogger({
     winston.format.timestamp(),
     winston.format.align(),
     winston.format.errors({ stack: true }),
+    winston.format.splat(),
     winston.format.printf(info => {
       const log = `[${info.timestamp}] ${info.level}: ${info.message}`;
       return !!info.stack ? `${log}\n${info.stack}` : log;

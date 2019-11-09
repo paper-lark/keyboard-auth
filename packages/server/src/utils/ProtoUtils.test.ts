@@ -4,7 +4,7 @@ import {
   AuthEvent
 } from 'keyboard-auth-common/lib/api/authenticator_pb';
 import { Timestamp } from 'google-protobuf/google/protobuf/timestamp_pb';
-import { KeyboardEventType } from '../typings/common';
+import { KeyboardEventType } from 'keyboard-auth-common/lib/typings/common';
 import moment from 'moment';
 
 describe('ProtoUtils', () => {
