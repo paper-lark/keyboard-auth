@@ -59,7 +59,8 @@ export class AuthenticationModel {
   }
 
   public getDeviation(window: KeyboardInteraction[]): number {
-    return this.calculateDeviation(
+    // deviation is negated so that positive class has a smaller value than the negative one
+    return -this.calculateDeviation(
       AuthenticationModel.mapWindowToTensor(window)
     );
   }

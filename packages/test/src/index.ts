@@ -52,7 +52,8 @@ function main() {
   const userData = new Map<string, KeyboardInteraction[]>();
   let userIds = extractor.getUserIds();
   if (config.debug) {
-    userIds = userIds.slice(0, 5);
+    // in debug mode we will only use two users
+    userIds = userIds.slice(0, 2);
   }
   userIds.forEach(userId => {
     logger.debug(`Reading data for user: ${userId}`);
@@ -65,28 +66,24 @@ function main() {
   userIds.forEach(userId => {
     // read user data
     logger.debug(`Preparing data for user: ${userId}`);
-    const [train, testOwn] = splitTestTrainData(userData.get(userId)!, 0.7);
+    const [train, testOwn] = splitTestTrainData(userData.get(userId)!, 0.7).map(
+      v => v.slice(0, config.maxDatasetSize)
+    );
     const testOther: KeyboardInteraction[] = [...userData.keys()]
       .filter(key => key !== userId)
       .map(key => userData.get(key)!)
-      .reduce((acc, value) => acc.concat(value), []);
+      .reduce((acc, value) => acc.concat(value), [])
+      .slice(0, config.maxDatasetSize);
 
     // calculate deviations on the model
-    // FIXME: model always returns 2
     logger.debug(`Accessing model for user: ${userId}`);
     logger.debug(
       `Using ${testOwn.length} own samples, ${testOther.length} other`
     );
     logger.debug(`Assessing model on own data…`);
-    const ownResult = accessModel(
-      train,
-      testOwn.slice(0, config.maxDatasetSize)
-    );
+    const ownResult = accessModel(train, testOwn);
     logger.debug(`Assessing model on other user data…`);
-    const otherResult = accessModel(
-      train,
-      testOther.slice(0, config.maxDatasetSize)
-    );
+    const otherResult = accessModel(train, testOther);
 
     // calculate statistics
     const stats = {

@@ -41,7 +41,7 @@ describe('Metrics', () => {
     it('should calculate score when all predictions have the same value', () => {
       const gt: number[] = [0, 1, 1, 0];
       const pred: number[] = [2, 2, 2, 2];
-      const expected = 0;
+      const expected = 0.5;
       const actual = Metrics.rocAuc(gt, pred);
       expect(actual).toBeCloseTo(expected);
     });

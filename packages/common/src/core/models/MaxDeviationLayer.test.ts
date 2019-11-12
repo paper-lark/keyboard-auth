@@ -10,7 +10,7 @@ describe('MaxDeviationLayer', () => {
       [10, 4, -5, -1]
     ]);
     const vector = tf.tensor1d([1, 1, 2, 3]);
-    const expected = 18 / 4;
+    const expected = 26;
 
     const model = new MaxDeviationLayer(gt);
     const actual = (model.apply(vector) as tf.Tensor1D).bufferSync();

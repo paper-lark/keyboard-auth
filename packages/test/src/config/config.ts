@@ -19,8 +19,8 @@ export default class ConfigurationSource {
     return {
       dataPath: process.env.DATA_PATH,
       featuresFile: process.env.FEATURES_FILENAME,
-      debug: true,
-      maxDatasetSize: 350
+      debug: false,
+      maxDatasetSize: 500
     };
   }
 }

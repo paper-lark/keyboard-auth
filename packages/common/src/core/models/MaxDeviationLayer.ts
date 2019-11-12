@@ -44,9 +44,7 @@ export class MaxDeviationLayer extends tf.layers.Layer {
    */
   public call(inputs: tf.Tensor): tf.Tensor {
     const expanded = inputs.as1D().expandDims(0);
-    return tf
-      .sum(tf.max(tf.abs(this.gt.sub(expanded)), [1]))
-      .div(this.gt.shape[0]);
+    return tf.sum(tf.max(tf.abs(this.gt.sub(expanded)), [0]));
   }
 
   /**

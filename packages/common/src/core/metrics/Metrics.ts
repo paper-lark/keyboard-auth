@@ -1,4 +1,5 @@
 import range from 'lodash/range';
+import { ArrayUtils } from '../../utils/ArrayUtils';
 
 export class Metrics {
   /**
@@ -27,31 +28,35 @@ export class Metrics {
       throw new Error(`Cannot calculate ROC AUC without negative samples`);
     }
 
-    // order predictions in descending order
-    const idx = range(gt.length);
-    idx.sort((a, b) => {
-      if (pred[a] === pred[b]) {
-        // negative class should go before positive
-        return gt[a] > gt[b] ? 1 : -1;
-      }
-      // larger value should go before smaller
-      return pred[a] < pred[b] ? 1 : -1;
-    });
+    // group by predictions
+    const groups = ArrayUtils.groupBy(range(gt.length), i => pred[i])
+      .reverse()
+      .reduce((groupsAcc, idx) => {
+        const newGroup = idx.reduce(
+          (acc, i) => ({
+            positive: acc.positive + gt[i],
+            negative: acc.negative + 1 - gt[i]
+          }),
+          {
+            positive: 0,
+            negative: 0
+          }
+        );
+        return [...groupsAcc, newGroup];
+      },      new Array<{ positive: number; negative: number }>());
 
     // calculate ROC AUC score
-    let score = 0;
     let tpr = 0;
     const negativeInc = 1 / negativeCount;
     const positiveInc = 1 / positiveCount;
-    idx.forEach(i => {
-      if (gt[i] === 0) {
-        score += negativeInc * tpr;
-      } else {
-        tpr += positiveInc;
-      }
-    });
-
-    return score;
+    return groups.reduce((score, g) => {
+      const newScore =
+        score +
+        g.negative * negativeInc * tpr +
+        0.5 * g.negative * negativeInc * g.positive * positiveInc;
+      tpr += g.positive * positiveInc;
+      return newScore;
+    },                   0);
   }
 
   /**

@@ -1,4 +1,5 @@
 import { ArrayUtils } from './ArrayUtils';
+import range from 'lodash/range';
 
 describe('ArrayUtils', () => {
   describe('average', () => {
@@ -37,6 +38,16 @@ describe('ArrayUtils', () => {
       const a = [1, 5, 4, 3, 2];
       const actual = ArrayUtils.shuffle(a);
       expect(actual.sort()).toEqual(a.sort());
+    });
+  });
+
+  describe('groupBy', () => {
+    it('groups array by value in ascending order', () => {
+      const weights = [4, 4, 4, 2, 1, 9];
+      const indices = range(weights.length);
+      const expected = [[4], [3], [0, 1, 2], [5]];
+      const actual = ArrayUtils.groupBy(indices, i => weights[i]);
+      expect(actual).toEqual(expected);
     });
   });
 });

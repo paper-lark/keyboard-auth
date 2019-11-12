@@ -115,7 +115,7 @@ describe('AuthenticationModel', () => {
   it('should calculate deviation correctly', () => {
     const auth = new AuthenticationModel(groundTruth, 2);
     const actual = auth.getDeviation(input);
-    expect(actual).toBeCloseTo(1.8125);
+    expect(actual).toBeCloseTo(-12);
   });
 
   it('should authenticate if deviation is small', () => {

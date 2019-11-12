@@ -24,4 +24,26 @@ export class ArrayUtils {
     }
     return result;
   }
+
+  public static groupBy<T>(arr: T[], value: (a: T) => number): Array<T[]> {
+    const temp = [...arr];
+    temp.sort(
+      (a, b) => Number(value(a) > value(b)) - Number(value(a) < value(b))
+    );
+    const groups: Array<T[]> = [];
+    let currentGroup: T[] = [];
+    temp.forEach((v, index) => {
+      if (index === 0 || value(v) !== value(temp[index - 1])) {
+        // element of the new group
+        index !== 0 && groups.push(currentGroup);
+        currentGroup = [v];
+      } else {
+        // element of the current group
+        currentGroup.push(v);
+      }
+    });
+    currentGroup.length > 0 && groups.push(currentGroup);
+
+    return groups;
+  } // FIXME: write tests
 }
