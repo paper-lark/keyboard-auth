@@ -1,9 +1,7 @@
-## Related issue
+Related issue: \#
 
-*Link to related issue*
+Proposed changes
 
-## Proposed changes
-
-1.
-2.
-3.
+- Fix '…'
+- Refactor '…'
+- Implement '…'
