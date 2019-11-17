@@ -9,13 +9,26 @@ import range from 'lodash/range';
 import { QuantileDiscretization } from './models/QuantileDiscretization';
 
 export class AuthenticationModel {
-  private readonly singleFeatures = 20; // FIXME: 37;
-  private readonly digraphFeatures = 50; // FIXME: 100;
-  private readonly numberOfBins = 7;
   private readonly discretization: QuantileDiscretization;
   private readonly gt: tf.Tensor2D;
+  private readonly maxDeviation: number;
+  private readonly singleFeatures: number;
+  private readonly digraphFeatures: number;
 
-  constructor(gt: KeyboardInteraction[], private maxDeviation: number) {
+  constructor(
+    gt: KeyboardInteraction[],
+    params: {
+      maxDeviation: number;
+      singleFeatures: number;
+      digraphFeatures: number;
+      discretizationBins: number;
+    }
+  ) {
+    // fill in parameters
+    this.maxDeviation = params.maxDeviation;
+    this.singleFeatures = params.singleFeatures;
+    this.digraphFeatures = params.digraphFeatures;
+
     // create multidimensional feature
     const intervals = this.getIntervals(gt);
     const multiFeatures = range(
@@ -24,7 +37,7 @@ export class AuthenticationModel {
     // const multiFeatures = this.getFeatures(gt);
     this.discretization = new QuantileDiscretization(
       multiFeatures,
-      this.numberOfBins
+      params.discretizationBins
     );
 
     // calculate ground truth vectors

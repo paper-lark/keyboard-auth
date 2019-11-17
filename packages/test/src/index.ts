@@ -1,4 +1,4 @@
-import ConfigurationSource from './config/config';
+import { ConfigurationSource, ModelConfiguration } from './config/config';
 import { DatasetExtractor } from './core/DatasetExtractor';
 import { logger } from 'keyboard-auth-common/lib/utils/logger';
 import { IDataFrame } from 'data-forge';
@@ -22,11 +22,17 @@ type UserTestStats = {
 
 function accessModel(
   train: KeyboardInteraction[],
-  test: KeyboardInteraction[]
+  test: KeyboardInteraction[],
+  config: ModelConfiguration
 ): number[] {
   // run model on test data
   const result: number[] = [];
-  const model = new AuthenticationModel(train, -550);
+  const model = new AuthenticationModel(train, {
+    maxDeviation: config.threshold,
+    singleFeatures: config.single,
+    digraphFeatures: config.digraph,
+    discretizationBins: config.discretizationBins
+  });
   const auth = (w: KeyboardInteraction[]) => result.push(model.getDecision(w));
   const window = new Window(noop, auth);
   test.forEach(window.add);
@@ -56,10 +62,13 @@ function main() {
 
   // read all user data
   logger.info(`[1] Reading user data…`);
-  const extractor = new DatasetExtractor(config.dataPath, config.featuresFile);
+  const extractor = new DatasetExtractor(
+    config.runner.root,
+    config.runner.featuresFile
+  );
   const userData = new Map<string, KeyboardInteraction[]>();
   let userIds = extractor.getUserIds();
-  if (config.debug) {
+  if (config.runner.debug) {
     // in debug mode we will only use a subset of users
     userIds = [
       '02a7de3838',
@@ -88,25 +97,25 @@ function main() {
     // read user data
     logger.debug(`Preparing data for user ${userId}`);
     const [train, testOwn] = splitTestTrainData(userData.get(userId)!, 0.8).map(
-      (v, i) =>
-        i === 0
-          ? v.slice(0, 2 * config.maxDatasetSize)
-          : v.slice(0, config.maxDatasetSize)
+      (v, setIdx) =>
+        setIdx === 0
+          ? v.slice(0, 2 * config.runner.maxInteractions)
+          : v.slice(0, config.runner.maxInteractions)
     );
     const testOther: KeyboardInteraction[] = [...userData.keys()]
       .filter(key => key !== userId)
       .map(key => userData.get(key)!)
       .reduce((acc, value) => acc.concat(value), [])
-      .slice(0, config.maxDatasetSize);
+      .slice(0, config.runner.maxInteractions);
 
     // calculate deviations on the model
     logger.debug(`Accessing model for user ${userId}: %j`, {
       train: train.length,
       test: testOwn.length
     });
-    const trainResult = accessModel(train, train);
-    const ownResult = accessModel(train, testOwn);
-    const otherResult = accessModel(train, testOther);
+    const trainResult = accessModel(train, train, config.model);
+    const ownResult = accessModel(train, testOwn, config.model);
+    const otherResult = accessModel(train, testOther, config.model);
 
     // calculate statistics
     const userStats = {

@@ -45,4 +45,4 @@ export class InteractionConstructor {
     };
     this.onInteractionComplete(interaction);
   };
-} // TODO: write tests
+}

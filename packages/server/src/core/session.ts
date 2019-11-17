@@ -100,7 +100,12 @@ export class Session {
     logger.info(`Creating session ${this.id} for user '${this.login}'`);
     if (!!gt) {
       logger.debug(`Authentication enabled in session ${this.id}`);
-      this.auth = new AuthenticationModel(gt, Session.deviationLimit);
+      this.auth = new AuthenticationModel(gt, {
+        maxDeviation: Session.deviationLimit,
+        singleFeatures: 37,
+        digraphFeatures: 100,
+        discretizationBins: 7
+      });
     } else {
       logger.debug(`Authentication disabled in session ${this.id}`);
     }

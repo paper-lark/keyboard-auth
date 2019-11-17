@@ -1,7 +1,7 @@
 import range from 'lodash/range';
 import { ArrayUtils } from '../../utils/ArrayUtils';
 
-export class Metrics {
+export namespace Metrics {
   /**
    * Calculates ROC AUC score
    * Read more: http://www.machinelearning.ru/wiki/index.php?title=Кривая_ошибок
@@ -9,7 +9,7 @@ export class Metrics {
    * @param {number[]} pred – predicted value, high for positive class and low for negative
    * @returns {number} – ROC AUC value
    */
-  public static rocAuc(gt: number[], pred: number[]): number {
+  export function rocAuc(gt: number[], pred: number[]): number {
     // check lengths
     if (gt.length !== pred.length) {
       throw new Error(`Ground truth and prediction lengths should be the same`);

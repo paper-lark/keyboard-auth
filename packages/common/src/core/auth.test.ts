@@ -117,13 +117,23 @@ describe('AuthenticationModel', () => {
   });
 
   it('should calculate deviation correctly', () => {
-    const auth = new AuthenticationModel(gt, 2);
+    const auth = new AuthenticationModel(gt, {
+      maxDeviation: 10,
+      singleFeatures: 20,
+      digraphFeatures: 50,
+      discretizationBins: 7
+    });
     const actual = auth.getDecision(input);
     expect(actual).toBeCloseTo(-62);
   });
 
   it.skip('should authenticate if deviation is small', () => {
-    const auth = new AuthenticationModel(gt, 2);
+    const auth = new AuthenticationModel(gt, {
+      maxDeviation: 10,
+      singleFeatures: 20,
+      digraphFeatures: 50,
+      discretizationBins: 7
+    });
     const actual = auth.authenticate(input);
     expect(actual).toBeTruthy();
   });

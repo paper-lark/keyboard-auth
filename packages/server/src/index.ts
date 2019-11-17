@@ -1,4 +1,4 @@
-import ConfigurationSource from './config/config';
+import { ConfigurationSource } from './config/config';
 import Server from './api/server';
 import { logger } from 'keyboard-auth-common/lib/utils/logger';
 import 'reflect-metadata';

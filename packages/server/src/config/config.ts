@@ -6,8 +6,8 @@ export interface Configuration {
   db: ConnectionOptions;
 }
 
-export default class ConfigurationSource {
-  public static get(): Configuration {
+export namespace ConfigurationSource {
+  export function get(): Configuration {
     return {
       port: process.env.GRPC_PORT ? Number(process.env.GRPC_PORT) : 3000,
       db: {

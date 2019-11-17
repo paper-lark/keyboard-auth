@@ -1,8 +1,9 @@
 import range from 'lodash/range';
 import assert from 'assert';
 
-export class ArrayUtils {
-  public static mean(a: number[]): number {
+export namespace ArrayUtils {
+  // Calculates mean of the given array
+  export function mean(a: number[]): number {
     if (a.length === 0) {
       // prevent zero division
       return 0;
@@ -11,13 +12,13 @@ export class ArrayUtils {
     return sum / a.length;
   }
 
-  public static padEnd<T>(a: T[], value: T, len: number): T[] {
+  export function padEnd<T>(a: T[], value: T, len: number): T[] {
     return [...a, ...Array(len).fill(value)].slice(0, len);
   }
 
   // Shuffle array using Fisher–Yates algorithm
   // Read more: https://en.wikipedia.org/wiki/Fisher–Yates_shuffle
-  public static shuffle<T>(a: T[]) {
+  export function shuffle<T>(a: T[]) {
     let result = [...a];
     let counter = result.length;
     while (counter > 0) {
@@ -28,7 +29,8 @@ export class ArrayUtils {
     return result;
   }
 
-  public static groupBy<T>(arr: T[], value: (a: T) => number): Array<T[]> {
+  // Groups array entries by the specified criteria
+  export function groupBy<T>(arr: T[], value: (a: T) => number): Array<T[]> {
     const temp = [...arr];
     temp.sort(
       (a, b) => Number(value(a) > value(b)) - Number(value(a) < value(b))
@@ -50,7 +52,8 @@ export class ArrayUtils {
     return groups;
   }
 
-  public static quantiles(a: number[], order: number): number[] {
+  // Calculates quantiles of the specified order in the array
+  export function quantiles(a: number[], order: number): number[] {
     assert.ok(a.length > 0, 'Cannot calculate quantiles for an empty array');
     assert.ok(
       order >= 2 && Number.isInteger(order),
@@ -69,7 +72,8 @@ export class ArrayUtils {
     });
   }
 
-  public static discretize(a: number[], quantile: number[]): number[] {
+  // Returns array of discretized values using specified quantiles
+  export function discretize(a: number[], quantile: number[]): number[] {
     assert.ok(
       quantile.length > 0,
       'Quantile array is empty, cannot discretize'
@@ -93,7 +97,8 @@ export class ArrayUtils {
     return result;
   }
 
-  public static median(a: number[]): number {
-    return this.quantiles(a, 2)[0];
+  // Calculates median of the array
+  export function median(a: number[]): number {
+    return quantiles(a, 2)[0];
   }
 }

@@ -16,8 +16,8 @@ export interface SingleDescription {
   timings: number[];
 }
 
-export class FeatureExtractor {
-  public static getDigraphs(
+export namespace FeatureExtractor {
+  export function getDigraphs(
     window: KeyboardInteraction[]
   ): DigraphDescription[] {
     const digraphs = new Map<string, DigraphDescription>();
@@ -54,11 +54,13 @@ export class FeatureExtractor {
     });
 
     const result = [...digraphs.values()];
-    result.sort((a, b) => -this.comparator(a, b)); // sort in descending order
+    result.sort((a, b) => -comparator(a, b)); // sort in descending order
     return result;
   }
 
-  public static getSingle(window: KeyboardInteraction[]): SingleDescription[] {
+  export function getSingle(
+    window: KeyboardInteraction[]
+  ): SingleDescription[] {
     const single = new Map<string, SingleDescription>();
 
     window.forEach(current => {
@@ -77,14 +79,11 @@ export class FeatureExtractor {
     });
 
     const result = [...single.values()];
-    result.sort((a, b) => -this.comparator(a, b)); // sort in descending order
+    result.sort((a, b) => -comparator(a, b)); // sort in descending order
     return result;
   }
 
-  private static comparator<T>(
-    a: { timings: T[] },
-    b: { timings: T[] }
-  ): number {
+  function comparator<T>(a: { timings: T[] }, b: { timings: T[] }): number {
     return (
       Number(a.timings.length > b.timings.length) -
       Number(a.timings.length < b.timings.length)
