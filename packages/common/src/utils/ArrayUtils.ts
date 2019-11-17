@@ -1,5 +1,8 @@
+import range from 'lodash/range';
+import assert from 'assert';
+
 export class ArrayUtils {
-  public static average(a: number[]): number {
+  public static mean(a: number[]): number {
     if (a.length === 0) {
       // prevent zero division
       return 0;
@@ -8,7 +11,7 @@ export class ArrayUtils {
     return sum / a.length;
   }
 
-  public static padEnd<T>(a: T[], value: T, len: number) {
+  public static padEnd<T>(a: T[], value: T, len: number): T[] {
     return [...a, ...Array(len).fill(value)].slice(0, len);
   }
 
@@ -45,5 +48,52 @@ export class ArrayUtils {
     currentGroup.length > 0 && groups.push(currentGroup);
 
     return groups;
-  } // FIXME: write tests
+  }
+
+  public static quantiles(a: number[], order: number): number[] {
+    assert.ok(a.length > 0, 'Cannot calculate quantiles for an empty array');
+    assert.ok(
+      order >= 2 && Number.isInteger(order),
+      `Cannot calculate quantiles of ${order} order`
+    );
+
+    const temp = [...a].sort((b, c) => Number(b > c) - Number(b < c));
+    return range(1, order).map(i => {
+      const idx = (i / order) * (a.length - 1);
+      const leftIdx = Math.floor(idx);
+      if (leftIdx !== idx && leftIdx + 1 < a.length) {
+        const frac = idx - leftIdx;
+        return temp[leftIdx] * (1 - frac) + temp[leftIdx + 1] * frac;
+      }
+      return temp[leftIdx];
+    });
+  }
+
+  public static discretize(a: number[], quantile: number[]): number[] {
+    assert.ok(
+      quantile.length > 0,
+      'Quantile array is empty, cannot discretize'
+    );
+
+    const idx = range(a.length).sort(
+      (i, j) => Number(a[i] > a[j]) - Number(a[i] < a[j])
+    );
+    let currentQuantile = 0;
+    const binForIdx = idx.map(i => {
+      while (
+        currentQuantile < quantile.length &&
+        a[i] > quantile[currentQuantile]
+      ) {
+        currentQuantile++;
+      }
+      return currentQuantile;
+    });
+    const result = new Array(a.length).fill(0);
+    idx.forEach((i, j) => (result[i] = binForIdx[j]));
+    return result;
+  }
+
+  public static median(a: number[]): number {
+    return this.quantiles(a, 2)[0];
+  }
 }

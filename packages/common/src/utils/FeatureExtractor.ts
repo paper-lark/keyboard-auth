@@ -85,12 +85,9 @@ export class FeatureExtractor {
     a: { timings: T[] },
     b: { timings: T[] }
   ): number {
-    if (a.timings.length < b.timings.length) {
-      return -1;
-    }
-    if (a.timings.length > b.timings.length) {
-      return 1;
-    }
-    return 0;
+    return (
+      Number(a.timings.length > b.timings.length) -
+      Number(a.timings.length < b.timings.length)
+    );
   }
 }

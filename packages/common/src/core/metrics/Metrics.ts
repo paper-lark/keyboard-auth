@@ -58,22 +58,4 @@ export class Metrics {
       return newScore;
     },                   0);
   }
-
-  /**
-   * Calculates median value.
-   * @param {number[]} values – array of values
-   * @returns {number} – median value from the array
-   */
-  public static median(values: number[]): number {
-    if (values.length === 0) {
-      return 0;
-    }
-
-    const sorted = [...values].sort((a, b) => Number(a > b) - Number(a < b));
-    const half = (values.length - 1) / 2;
-    if ((values.length - 1) % 2 === 1) {
-      return (sorted[Math.ceil(half)] + sorted[Math.floor(half)]) / 2;
-    }
-    return sorted[Math.floor(half)];
-  }
 }

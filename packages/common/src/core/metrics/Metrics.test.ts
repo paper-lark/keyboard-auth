@@ -46,27 +46,4 @@ describe('Metrics', () => {
       expect(actual).toBeCloseTo(expected);
     });
   });
-
-  describe('Median', () => {
-    it('should calculate median correctly when length is odd', () => {
-      const values = [0, -1, 5, -10, 10, 20, 4];
-      const expected = 4;
-      const actual = Metrics.median(values);
-      expect(actual).toBeCloseTo(expected);
-    });
-
-    it('should calculate median correctly when length is even', () => {
-      const values = [0, -1, 5, -10, 10, 20, 4, -100];
-      const expected = 2;
-      const actual = Metrics.median(values);
-      expect(actual).toBeCloseTo(expected);
-    });
-
-    it('should calculate median correctly when length is one', () => {
-      const values = [10];
-      const expected = 10;
-      const actual = Metrics.median(values);
-      expect(actual).toBeCloseTo(expected);
-    });
-  });
 });

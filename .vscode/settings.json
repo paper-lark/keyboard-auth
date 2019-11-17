@@ -9,5 +9,8 @@
             "port": "12001",
             "profileName": "Project DB"
         }
+    ],
+    "cSpell.words": [
+        "Incompatible"
     ]
 }
