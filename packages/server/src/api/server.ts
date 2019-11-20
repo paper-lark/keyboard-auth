@@ -6,7 +6,7 @@ import {
 import grpc, { ServerDuplexStream } from 'grpc';
 import { AuthenticatorService } from 'keyboard-auth-common/lib/api/authenticator_grpc_pb';
 import { logger } from 'keyboard-auth-common/lib/utils/logger';
-import { ProtoUtils } from '../utils/proto';
+import { ProtoUtils } from '../utils/ProtoUtils';
 import { Session } from '../core/session';
 import { getManager } from '../core/manager';
 import GRPCError from 'grpc-error';
@@ -64,17 +64,26 @@ export default class Server {
     },                             this.authenticationTimeout);
 
     // create handlers
+    const blockSession = () => {
+      const decision = new Decision();
+      const block = new BlockDecision();
+      block.setReason(`Authentication failed`);
+      decision.setBlock(block);
+      call.write(decision);
+    };
+
     const handleEnd = () => {
       releaseSession();
       call.end();
     };
+
     const handleError = (e: Error) => {
-      logger.error(`Error occurred in session: `, e);
       releaseSession();
       call.end();
     };
+
     const handleEvent = async (event: Event) => {
-      const release = await processingLock.acquire();
+      const releaseLock = await processingLock.acquire(); // TODO: refactor
       try {
         // cancel authentication timeout
         clearTimeout(authTimeout);
@@ -93,7 +102,8 @@ export default class Server {
           const authEvent = ProtoUtils.mapAuthEventFromProto(auth);
           session = await getManager().createSession(
             authEvent.login,
-            authEvent.token
+            authEvent.token,
+            blockSession
           );
         } else if (!!keyboard) {
           // keyboard event received
@@ -104,18 +114,11 @@ export default class Server {
               grpc.status.UNAUTHENTICATED
             );
           }
-          const isBlocked = session.putKeyboardEvent(keyboardEvent);
-          if (isBlocked) {
-            const decision = new Decision();
-            const block = new BlockDecision();
-            block.setReason(
-              `server blocked session ${session.getID().toString()}`
-            );
-            decision.setBlock(block);
-            call.write(decision);
-          }
+          session.putKeyboardEvent(keyboardEvent);
         }
       } catch (e) {
+        logger.error('Error occurred in session: ', e);
+        logger.error(e.stack);
         if (e instanceof GRPCError) {
           call.destroy(e);
         } else {
@@ -123,7 +126,7 @@ export default class Server {
         }
         releaseSession();
       } finally {
-        release();
+        releaseLock();
       }
     };
 

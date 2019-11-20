@@ -7,10 +7,10 @@ import {
   AuthenticationEvent,
   KeyboardEvent,
   KeyboardEventType
-} from '../typings/common';
+} from 'keyboard-auth-common/lib/typings/common';
 
-export class ProtoUtils {
-  public static mapKeyboardEventFromProto(event: Keyboard): KeyboardEvent {
+export namespace ProtoUtils {
+  export function mapKeyboardEventFromProto(event: Keyboard): KeyboardEvent {
     const ts = event.getTs();
     if (!ts) {
       throw Error('Missing timestamp in event');
@@ -30,7 +30,7 @@ export class ProtoUtils {
     };
   }
 
-  public static mapAuthEventFromProto(event: Auth): AuthenticationEvent {
+  export function mapAuthEventFromProto(event: Auth): AuthenticationEvent {
     const login = event.getLogin();
     const token = event.getToken();
     if (!login) {

@@ -1,0 +1,25 @@
+# Assessment runner configuration
+runner:
+  # Path to dataset root
+  root: "/Users/zhuravsky-max/.yandex.disk/483506592/Yandex.Disk.localized/Documents/School/Research/Data"
+  # File containing features in the session folder
+  featuresFile: "KEYBOARD.csv"
+  # Enable/disable debug mode
+  # In debug mode only 10 users will be used
+  debug: true
+  # Maximum number of interactions used for testing.
+  maxInteractions: 500
+
+# Authentication model configuration
+model:
+  # Number of most frequent single interactions used as features
+  single: 20
+  # Number of most frequent digraphs used as features
+  digraph: 50
+  # Number of discretization bins
+  discretizationBins: 7
+  # Deviation threshold
+  # Interactions below threshold are assigned the negative class,
+  # interactions above are assigned the positive class.
+  threshold: 600
+

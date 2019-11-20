@@ -1,13 +1,9 @@
 {
-  "name": "keyboard-auth-common",
+  "name": "keyboard-auth-test",
   "version": "0.0.0",
-  "description": "Keyboard authenticator common package",
+  "description": "Keyboard authenticator test stand",
   "scripts": {
-    "build": "rm -rf ./lib && yarn run build:ts && yarn run build:proto",
-    "build:ts": "tsc",
-    "build:proto": "./script/generate_proto.sh",
-    "prepare": "yarn run build",
-    "test": "jest -c config/jest.js",
+    "start": "node --max_old_space_size=8192 --expose-gc -r ts-node/register ./src/index.ts",
     "lint": "prettier-tslint fix '**/*.ts'",
     "precommit": "lint-staged"
   },
@@ -26,20 +22,26 @@
   },
   "homepage": "https://github.com/paper-lark/keyboard-auth#readme",
   "devDependencies": {
-    "@types/jest": "24.0.18",
+    "@types/js-yaml": "3.12.1",
     "@types/lodash": "4.14.144",
-    "@types/moment": "2.13.0",
-    "grpc": "1.23.3",
-    "grpc-tools": "1.8.0",
-    "grpc_tools_node_protoc_ts": "2.5.5",
-    "jest": "24.9.0",
+    "@types/node": "12.7.5",
+    "cross-env": "6.0.3",
+    "prettier": "1.18.2",
+    "prettier-tslint": "0.4.2",
+    "ts-node": "8.3.0",
+    "tslint": "5.20.0",
+    "tslint-config-prettier": "1.18.0",
+    "tslint-config-security": "1.16.0",
     "typescript": "3.6.3"
   },
   "dependencies": {
-    "@tensorflow/tfjs-node": "1.3.1",
+    "data-forge": "1.7.7",
+    "data-forge-fs": "0.0.7",
+    "js-yaml": "3.13.1",
+    "keyboard-auth-common": "0.0.0",
     "lodash": "4.17.15",
     "moment": "2.24.0",
-    "winston": "3.2.1"
+    "node-fetch-polyfill": "2.0.6"
   },
   "lint-staged": {
     "src/**/*.ts": [

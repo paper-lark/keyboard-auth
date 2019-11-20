@@ -1,5 +1,5 @@
 import { ProtoUtils } from './proto';
-import moment = require('moment');
+import moment from 'moment';
 import { KeyEvent } from './io';
 import { KeyboardEvent } from 'keyboard-auth-common/lib/api/authenticator_pb';
 

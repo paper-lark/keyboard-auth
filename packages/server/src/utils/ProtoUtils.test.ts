@@ -1,11 +1,11 @@
-import { ProtoUtils } from './proto';
+import { ProtoUtils } from './ProtoUtils';
 import {
   KeyboardEvent,
   AuthEvent
 } from 'keyboard-auth-common/lib/api/authenticator_pb';
 import { Timestamp } from 'google-protobuf/google/protobuf/timestamp_pb';
-import { KeyboardEventType } from '../typings/common';
-import moment = require('moment');
+import { KeyboardEventType } from 'keyboard-auth-common/lib/typings/common';
+import moment from 'moment';
 
 describe('ProtoUtils', () => {
   describe('keyboard event parser', () => {

@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/paper-lark/keyboard-auth#readme",
   "dependencies": {
+    "@tensorflow/tfjs-node": "1.2.10",
     "async-mutex": "0.1.4",
     "google-protobuf": "3.10.0-rc.1",
     "grpc": "1.23.3",
@@ -47,6 +48,7 @@
     "@types/grpc-error": "1.0.0",
     "@types/jest": "24.0.18",
     "@types/lodash": "4.14.138",
+    "@types/mathjs": "6.0.2",
     "@types/moment": "2.13.0",
     "@types/node": "12.7.5",
     "cross-env": "6.0.3",
