@@ -1,5 +1,5 @@
 import typescript from 'rollup-plugin-typescript';
-import { uglify } from "rollup-plugin-uglify";
+import commonjs from 'rollup-plugin-commonjs';
 import pkg from './package.json';
 
 export default {
@@ -9,12 +9,12 @@ export default {
     format: 'cjs'
   },
   external: [
-    ...Object.keys(pkg.dependencies || {}),
-    ...Object.keys(pkg.peerDependencies || {}),
+    // ...Object.keys(pkg.dependencies || {}),
+    // ...Object.keys(pkg.peerDependencies || {}),
   ],
   plugins: [
     typescript(),
-    uglify()
+    commonjs({extensions: ['.js', '.ts']})
   ]
   // TODO: minify node_modules too
 }
