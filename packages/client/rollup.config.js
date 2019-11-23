@@ -1,6 +1,6 @@
 import typescript from 'rollup-plugin-typescript';
 import commonjs from 'rollup-plugin-commonjs';
-import pkg from './package.json';
+import { terser } from "rollup-plugin-terser";
 
 export default {
   input: './src/index.ts',
@@ -8,13 +8,9 @@ export default {
     file: 'lib/bundle.js',
     format: 'cjs'
   },
-  external: [
-    // ...Object.keys(pkg.dependencies || {}),
-    // ...Object.keys(pkg.peerDependencies || {}),
-  ],
   plugins: [
     typescript(),
-    commonjs({extensions: ['.js', '.ts']})
+    commonjs({extensions: ['.js', '.ts']}),
+    terser({ sourcemap: false })
   ]
-  // TODO: minify node_modules too
 }
