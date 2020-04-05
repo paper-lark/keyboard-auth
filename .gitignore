@@ -5,11 +5,12 @@ junk
 .idea
 
 # Virtualenv
-env
+venv
 
 # Build and generated files
 iohook
 build
+dist
 packages/*/lib
 __generated__
 __pycache__

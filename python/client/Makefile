@@ -19,9 +19,8 @@ venv_freeze:
 	pip freeze > requirements.txt
 
 venv_create:
-	python3 -m venv env
-	source env/bin/activate
-	pip install -r requirements.txt
+	python3 -m venv venv
+	source venv/bin/activate && pip install -r requirements.txt
 
 build: $(proto_compiled)
 	pyinstaller --onefile $(entry_point)
