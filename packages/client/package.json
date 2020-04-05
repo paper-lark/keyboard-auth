@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "Keyboard authenticator client",
   "main": "index.ts",
+  "private": true,
   "scripts": {
     "start:dev": "cross-env TS_NODE_FILES=true ts-node --project tsconfig.json src/index.ts",
     "test": "jest -c config/jest.js",
@@ -29,7 +30,7 @@
     "google-protobuf": "3.10.0-rc.1",
     "grpc": "1.23.3",
     "iohook": "0.6.1",
-    "keyboard-auth-common": "^0.0.0",
+    "keyboard-auth-common": "0.0.0",
     "lodash": "4.17.15",
     "mem": ">=4.0.0",
     "moment": "2.24.0",

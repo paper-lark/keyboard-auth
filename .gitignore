@@ -1,9 +1,15 @@
 # Auxiliary files
 node_modules
 *.tsbuildinfo
+junk
+.idea
+
+# Virtualenv
+env
 
 # Build and generated files
 iohook
 build
 packages/*/lib
 __generated__
+__pycache__
