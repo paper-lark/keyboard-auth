@@ -1,7 +1,8 @@
-.PHONY: all venv_freeze clean
+.PHONY: all start venv_freeze venv_create clean build
 
 proto_srcs = proto/authenticator.proto
 proto_compiled = src/api/__generated__/authenticator_pb2.py src/api/__generated__/authenticator_pb2_grpc.py
+entry_point = main.py
 
 all: $(proto_compiled)
 
@@ -12,7 +13,7 @@ $(proto_compiled): $(proto_srcs)
 
 start: $(proto_compiled)
 	@echo 'Starting application'
-	@sudo python __init__.py
+	@sudo python $(entry_point)
 
 venv_freeze:
 	pip freeze > requirements.txt
@@ -22,6 +23,8 @@ venv_create:
 	source env/bin/activate
 	pip install -r requirements.txt
 
+build: $(proto_compiled)
+	pyinstaller --onefile $(entry_point)
 
 clean:
 	rm $(proto_compiled)
