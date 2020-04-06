@@ -1,5 +1,6 @@
 import signal
 import sys
+import logging
 from src.core.app import App, AppState
 from src.config import Configuration
 from src.api.client import ApiClient
@@ -17,6 +18,9 @@ def exit_gracefully(signum, frame):
 
 
 if __name__ == '__main__':
+    # setup logger
+    logging.basicConfig(format=u'%(asctime)s [%(levelname)s] <%(name)s> %(message)s', level=logging.DEBUG)
+
     # store initial signal handler
     original_sigint = signal.getsignal(signal.SIGINT)
     signal.signal(signal.SIGINT, exit_gracefully)

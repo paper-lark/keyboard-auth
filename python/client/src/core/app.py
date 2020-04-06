@@ -2,6 +2,7 @@ import keyboard
 from src.api.client import ApiClient, KeyboardEventType
 from src.helpers import lock_screen
 import threading
+import logging
 from enum import Enum
 
 
@@ -15,12 +16,12 @@ class App:
     """
     Main application class.
     """
-    # FIXME: use logger
     def __init__(self, client: ApiClient):
         self._state_mutex = threading.Semaphore(value=1)
         self._state = AppState.Idle
         self._client = client
         self._client_thread = None
+        self._logger = logging.getLogger('App')
 
     @property
     def state(self):
@@ -37,7 +38,7 @@ class App:
             )
             self._client_thread.start()
             keyboard.hook(self._on_key_event)
-            print('App started')
+            self._logger.info('App started')
 
     def stop(self):
         with self._state_mutex:
@@ -45,15 +46,15 @@ class App:
                 keyboard.unhook_all()
                 self._client.stop()
                 self._client_thread.join()
-                print('App stopped')
+                self._logger.info('App stopped')
             self._state = AppState.Stopped
 
     def _on_block(self):
-        print('App is blocked')
+        self._logger.info('Blocking workstation')
         lock_screen()
 
     def _on_key_event(self, event: keyboard.KeyboardEvent):
-        print('Keyboard event received: {}'.format(event))
+        self._logger.debug('Keyboard event received: {}'.format(event))
         with self._state_mutex:
             if self._state == AppState.Running:
                 event_type = KeyboardEventType.KeyDown \
@@ -62,4 +63,4 @@ class App:
                 # TODO: use scan code
                 self._client.send_keyboard_event(event_type, event.name)
             else:
-                print('App not running, event ignored')
+                self._logger.warning('App not running, event ignored')
