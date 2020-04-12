@@ -44,10 +44,17 @@ _macos_cyrillic_letter_map = {
 }
 
 _linux_lock_commands = [
-    ('xdg-screensaver', 'lock'),
+    # Lock screen
+    # Read more: https://askubuntu.com/questions/184728/how-do-i-lock-the-screen-from-a-terminal
     ('gnome-screensaver-command', '--lock'),
     ('cinnamon-screensaver-command', '--lock'),
-    ('dm-tool', 'lock')
+    ('dm-tool', 'lock'),
+
+    # Suspend as a fallback
+    # Read more: https://askubuntu.com/questions/1792/how-can-i-suspend-hibernate-from-command-line
+    ('systemctl', 'suspend'),
+    ('pmi', 'action', 'suspend'),
+    ('pm-suspend',)
 ]
 
 
@@ -79,12 +86,12 @@ def lock_screen():
         if code != 0:
             raise RuntimeError('Failed to lock system, code: {}'.format(code))
     elif os_type == OSType.Linux:
-        # Read more: https://askubuntu.com/questions/184728/how-do-i-lock-the-screen-from-a-terminal
         for command in _linux_lock_commands:
             if which(command[0]) is not None:
                 try:
-                    subprocess.call(command)
-                    return
+                    code = subprocess.call(command)
+                    if code == 0:
+                        return
                 except:
                     pass
         raise RuntimeError('Could not lock system. Please consider installing xdg-screensaver, gnome-screensaver, cinnamon-screensaver, or dm-tool.')

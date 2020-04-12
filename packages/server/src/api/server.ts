@@ -83,7 +83,7 @@ export default class Server {
     };
 
     const handleEvent = async (event: Event) => {
-      const releaseLock = await processingLock.acquire(); // TODO: refactor
+      const releaseLock = await processingLock.acquire();
       try {
         // cancel authentication timeout
         clearTimeout(authTimeout);
