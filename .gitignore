@@ -3,6 +3,7 @@ node_modules
 *.tsbuildinfo
 junk
 .idea
+.DS_Store
 
 # Virtualenv
 venv

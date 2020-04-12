@@ -1,6 +1,6 @@
 import keyboard
 from src.api.client import ApiClient, KeyboardEventType
-from src.helpers import lock_screen
+from src.helpers import lock_screen, map_keyname
 import threading
 import logging
 from enum import Enum
@@ -54,13 +54,13 @@ class App:
         lock_screen()
 
     def _on_key_event(self, event: keyboard.KeyboardEvent):
-        self._logger.debug('Keyboard event received: {}'.format(event))
+        self._logger.debug('Keyboard event received: {}'.format(event.to_json()))
         with self._state_mutex:
             if self._state == AppState.Running:
                 event_type = KeyboardEventType.KeyDown \
                     if event.event_type == keyboard.KEY_DOWN \
                     else KeyboardEventType.KeyUp
-                # TODO: use scan code
-                self._client.send_keyboard_event(event_type, event.name)
+                event_keyname = map_keyname(event.name)
+                self._client.send_keyboard_event(event_type, event_keyname)
             else:
                 self._logger.warning('App not running, event ignored')
