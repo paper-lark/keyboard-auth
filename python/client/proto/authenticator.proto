@@ -1,0 +1,41 @@
+syntax = "proto3";
+package authenticator;
+
+import "google/protobuf/timestamp.proto";
+
+service Authenticator {
+    rpc Connect(stream Event) returns (stream Decision) {}
+}
+
+message Event {
+    oneof event {
+        AuthEvent auth = 1;
+        KeyboardEvent keyboard = 2;
+    }
+}
+
+message AuthEvent {
+    string login = 1;
+    string token = 2;
+}
+
+message KeyboardEvent {
+    enum EventType {
+        KEYDOWN = 0;
+        KEYUP = 1;
+    };
+
+    google.protobuf.Timestamp ts = 1;
+    string key = 2;
+    EventType type = 3;
+}
+
+message Decision {
+    oneof decision {
+        BlockDecision block = 1;
+    }
+}
+
+message BlockDecision {
+    string reason = 1;
+}

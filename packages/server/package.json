@@ -2,11 +2,12 @@
   "name": "keyboard-auth-server",
   "version": "0.0.0",
   "description": "Keyboard authenticator server",
+  "private": true,
   "main": "index.ts",
   "scripts": {
-    "start:dev": "cross-env TS_NODE_FILES=true ts-node --project tsconfig.json src/index.ts",
+    "start:dev": "dotenv -e .env cross-env TS_NODE_FILES=true ts-node --project tsconfig.json src/index.ts",
     "test": "jest -c config/jest.js",
-    "create:db": "docker run -d --name project_pg -p 12001:5432 postgres:11 && docker exec -it project_pg psql -U postgres -c 'create database project'",
+    "create:db": "docker run -d --name project_pg -p 12001:5432 -e POSTGRES_HOST_AUTH_METHOD=trust postgres:11 && docker exec -it project_pg psql -U postgres -c 'create database project'",
     "stop:db": "docker stop project_pg",
     "start:db": "docker start project_pg",
     "connect:db": "pgcli --host=127.0.0.1 --port=12001 --dbname=project --username=postgres",
@@ -40,8 +41,7 @@
     "moment": "2.24.0",
     "pg": "7.12.1",
     "reflect-metadata": "0.1.13",
-    "typeorm": "0.2.19",
-    "typescript": "3.6.3"
+    "typeorm": "0.2.19"
   },
   "devDependencies": {
     "@types/google-protobuf": "3.7.1",
@@ -52,6 +52,7 @@
     "@types/moment": "2.13.0",
     "@types/node": "12.7.5",
     "cross-env": "6.0.3",
+    "dotenv-cli": "3.1.0",
     "grpc-tools": "1.8.0",
     "grpc_tools_node_protoc_ts": "2.5.4",
     "jest": "24.9.0",

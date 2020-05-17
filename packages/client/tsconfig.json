@@ -3,6 +3,10 @@
     "compilerOptions": {
         "rootDir": "./src",
         "baseUrl": ".",
-        "outDir": "./lib"
+        "outDir": "./lib",
+        "typeRoots" : [
+            "src/typings/lib",
+            "node_modules/@types"
+        ]
     }
 }

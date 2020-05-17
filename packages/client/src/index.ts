@@ -3,11 +3,11 @@ import { logger } from 'keyboard-auth-common/lib/utils/logger';
 import { KeyUpEvent, KeyDownEvent, KeyLogger } from './utils/io';
 import ConfigurationSource from './config/config';
 import Authenticator from './api/server';
-import lockSystem from 'lock-system';
+import { OSLock } from './utils/lock';
 
 // get configuration
 const config = ConfigurationSource.get();
-const auth = new Authenticator(config, lockSystem);
+const auth = new Authenticator(config, OSLock.lock);
 
 // initialize io hooks
 function onKeyDown(event: KeyDownEvent) {
