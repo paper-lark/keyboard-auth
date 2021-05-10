@@ -40,7 +40,7 @@
     "data-forge-fs": "0.0.7",
     "js-yaml": "3.13.1",
     "keyboard-auth-common": "0.0.0",
-    "lodash": "4.17.15",
+    "lodash": "4.17.21",
     "moment": "2.24.0",
     "node-fetch-polyfill": "2.0.6"
   },
