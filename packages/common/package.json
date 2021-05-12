@@ -29,7 +29,7 @@
     "@types/jest": "24.0.18",
     "@types/lodash": "4.14.144",
     "@types/moment": "2.13.0",
-    "grpc": "1.23.3",
+    "grpc": "1.24.9",
     "grpc-tools": "1.8.0",
     "grpc_tools_node_protoc_ts": "2.5.5",
     "jest": "24.9.0",
